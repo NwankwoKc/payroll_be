@@ -57,12 +57,12 @@ export const setupAssociations = (sequelize: Sequelize) => {
 
   //salary -> user (One-to-Many)
   Salary.hasMany(User, {
-    foreignKey:'id',
+    foreignKey:'salary',
     as:'salary_user'
   })
   //user -> salary (Many-to-One)
   User.belongsTo(Salary, {
-    foreignKey:'id',
+    foreignKey:'salary',
     as:'user_salary'
   })
 
@@ -84,4 +84,21 @@ export const setupAssociations = (sequelize: Sequelize) => {
       );
     }
   });
+
+  Payment.afterCreate(async (payment) => {
+    if (payment.employee_id) {
+      await User.update(
+        { payment: sequelize.fn('array_append', sequelize.col('payments'), payment.id) },
+        { where: { id: payment.employee_id } }
+      );
+    }
+  })
+  Payment.afterDestroy(async (payment) => {
+    if (payment.employee_id) {
+      await User.update(
+        { payment: sequelize.fn('array_remove', sequelize.col('payments'), payment.id) },
+        { where: { id: payment.employee_id } }
+      );
+    }
+  })
 };

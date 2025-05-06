@@ -64,7 +64,7 @@ export class user {
           sex: "",
           phonenumber: 0,
           jobtitle: "",
-          salary: 0,
+          salary: uuidv4() as `${string}-${string}-${string}-${string}-${string}`,
           bankaccount: 0,
           bankname: userData.bankname,
           role: uuidv4() as `${string}-${string}-${string}-${string}-${string}`,

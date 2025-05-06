@@ -3,7 +3,6 @@ import { UUID } from "crypto";
 interface postionattribute {
     id:UUID,
     name:string,
-    employee_id:UUID,
     department_id:UUID,
     paygrade_id:UUID,
     isactive:boolean,
@@ -16,7 +15,6 @@ class Position extends Model<positioncreationattribute,postionattribute>
 implements postionattribute{
     public id!:UUID
     public name!:string
-    public employee_id!:UUID
     public department_id!:UUID
     public paygrade_id!:UUID
     public isactive!: boolean;
@@ -32,9 +30,6 @@ implements postionattribute{
                 },
             name: {
                 type:DataTypes.TEXT 
-            },
-            employee_id: { 
-                type:DataTypes.UUID,
             },
             department_id:{ 
                 type: DataTypes.UUID

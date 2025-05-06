@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import HttpException from "../utils/http.exception";
 
-function errorMiddleware(
+const errorMiddleware = function(
   err: HttpException,
   req: Request,
   res: Response,

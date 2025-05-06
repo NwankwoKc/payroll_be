@@ -5,7 +5,7 @@ import { Model, DataTypes, Optional,Sequelize} from 'sequelize';
 
 interface SalaryAttributes {
   id: string; // UUID is represented as string in TypeScript
-  employeeId: string;
+  name:string
   value: number;
   taxDeduction: number;
   calculation_type:string
@@ -21,7 +21,7 @@ interface SalaryCreationAttributes extends Optional<SalaryAttributes, 'id'> {}
 class Salary extends Model<SalaryAttributes, SalaryCreationAttributes> 
   implements SalaryAttributes {
   public id!: string;
-  public employeeId!: string;
+  public name!: string
   public value!: number;
   public taxDeduction!: number;
   public calculation_type!: string;
@@ -39,10 +39,9 @@ class Salary extends Model<SalaryAttributes, SalaryCreationAttributes>
             primaryKey: true,
             allowNull: false,
           },
-          employeeId: {
-            type: DataTypes.UUID,
-            allowNull: false,
-            field: 'employeeid' // Maps to your existing DB column name
+          name:{
+            type:DataTypes.STRING,
+            allowNull:false
           },
           value: {
             type: DataTypes.INTEGER,

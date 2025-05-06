@@ -17,7 +17,7 @@ import { UUID } from "crypto";
     sex:string,
     phonenumber:number,
     jobtitle:string,
-    salary:number,
+    salary:UUID,
     bankaccount:number,
     bankname:string,
     role:UUID,
@@ -42,7 +42,7 @@ class User extends Model <usercreationattribute,userattribute>
         public sex!:string
         public phonenumber!:number
         public jobtitle!:string
-        public salary!:number
+        public salary!:UUID
         public bankaccount!:number
         public bankname!:string
         public role!:UUID
@@ -112,7 +112,7 @@ class User extends Model <usercreationattribute,userattribute>
                     allowNull:false
                 },
                 salary:{
-                    type:DataTypes.INTEGER,
+                    type:DataTypes.UUID,
                     allowNull:false
                 },
                 bankaccount:{
