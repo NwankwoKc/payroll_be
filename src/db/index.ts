@@ -7,7 +7,9 @@ import {setupAssociations} from './associations';
 import { Salary } from './model/salary';
 import Attendance from './model/attendance';
 import leave from './model/leave';
-const sequelize  = new Sequelize("postgresql://postgres.jtdjpjsmhglhmybdaida:plmoknijb101@aws-0-eu-west-2.pooler.supabase.com:6543/postgres")
+import dotenv from 'dotenv';
+dotenv.config()
+const sequelize  = new Sequelize(process.env.databaseurl as string || "postgresql://postgres.jtdjpjsmhglhmybdaida:plmoknijb101@aws-0-eu-west-2.pooler.supabase.com:6543/postgres")
 User.initialize(sequelize);
 Payment.initialize(sequelize);
 Department.initialize(sequelize);
@@ -21,7 +23,7 @@ setupAssociations(sequelize);
 // Sync database
 (async () => {
   try {
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ alter: true});
     console.log('Database synced!');
   } catch (error) {
     console.error('Error syncing database:', error);

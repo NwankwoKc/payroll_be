@@ -8,13 +8,11 @@ import User from "../../db/model/user";
 // import { db } from "../../db/models";
 import "dotenv/config";
 import { UUID } from "sequelize";
-
+import bcrypt from "bcryptjs";
 import { user } from "../user.controller";
 
 
-type SignUpData = {
-  firstName: string;
-  lastName: string;
+type loginData = {
   email: string;
   password: string;
 
@@ -34,15 +32,18 @@ export class AuthController {
   }
 
   private login = asyncWrap(async (req: Request, res: Response) => {
-    let loginData = req.body;
+    let loginData:loginData = req.body;
 
     const existingUser = await User.findOne({
-      where: { email: loginData.email,
-               password: loginData.password,
-       },
+      where: { email: loginData.email},
     });
 
     if (!existingUser) {
+      throw new HttpException(401, "Invalid login credentials");
+    }
+
+    const isPasswordValid = await bcrypt.compareSync(req.body.password, existingUser.password);
+    if (!isPasswordValid) {
       throw new HttpException(401, "Invalid login credentials");
     }
 
@@ -50,16 +51,9 @@ export class AuthController {
     const payload = {
       uid: uid,
     };
-
-    const secretKey = process.env.SECRETKEY as string;
-    const token = jwt.sign(payload, secretKey, {
-      expiresIn: "1d",
-    });
-
     res.status(200).json({
       success: true,
-      user,
-      token,
+      user
     });
   });
 }

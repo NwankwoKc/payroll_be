@@ -7,6 +7,8 @@ import { where } from 'sequelize';
 import {usercreationattribute} from "../db/model/user"
 import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
+import multer from 'multer';
+import uploadFile from '../middlewares/create.image';
 
 export class user {
     router: Router;
@@ -20,6 +22,7 @@ export class user {
         this.router.get('/user/:id', this.getUser);
         this.router.put('/user/:id', this.updateUser);
         this.router.delete('/user/:id', this.deleteUser);
+        this.router.post('/user/uploadprofile/:id',this.uploadprofile)
     }   
     private createuser = asyncWrap(async (req:Request,res:Response) => {
 
@@ -110,7 +113,7 @@ export class user {
     }
     );
     deleteUser = asyncWrap(async (req, res) => {
-        const userId = req.params.id;
+        const userId = req.params.id; 
         await User.destroy({
             where:{
                 id:userId
@@ -120,5 +123,30 @@ export class user {
             message: `User with ID ${userId} deleted successfully` ,
             success:true
         });
+    })
+    uploadprofile = asyncWrap(async (req:Request,res:Response) => {
+      const storage = multer.memoryStorage()
+      const userId = req.params.id;
+      const user = await User.findByPk(userId);
+      if (!user) {
+        throw new HttpException(404, "User not found");
+      }
+      const file = req.file;
+      if (!file) {
+        throw new HttpException(400, "No file uploaded");
+      }
+      const fileName = `${uuidv4()}-${file.originalname}`;
+      const filePath = req.file?.path; 
+      const fileBuffer = file.buffer;
+      if(filePath)
+      // Save the file to the server or cloud storage 
+      await uploadFile(fileBuffer,fileName, filePath);
+      // Update the user's profile picture URL in the database
+      res.status(200).json({
+        message: "Profile picture uploaded successfully",
+        fileName: fileName,
+        filePath: filePath,
+        success:true
+      });
     })
 }

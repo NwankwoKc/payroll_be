@@ -95,7 +95,7 @@ export class salary {
         }]
       })
       if (!salary) {
-        throw new HttpException(404, "No departments found");
+        throw new HttpException(404, "No salary found");
       }
       res.status(200).json({
         success: true,

@@ -5,6 +5,8 @@ import {user} from './controllers/user.controller'
 import { department } from "./controllers/department.controller";
 import { Payslip } from "./controllers/payslip.controller";
 import { attendance } from "./controllers/attendance.controller";
+import {position} from "./controllers/position.controller";
+import {salary} from "./controllers/salary.controller";
 dotenv.config()
-const app = new App ([new AuthController(),new user(),new department(),new Payslip(),new attendance()],3000)
+const app = new App ([new AuthController(),new user(),new department(),new Payslip(),new attendance(),new position(),new salary(),new user()],process.env.port as unknown as number)
 app.listen()

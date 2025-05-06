@@ -1,7 +1,6 @@
-import bcrypt from "bcrypt";
 import { Model, Optional, DataTypes, Sequelize } from "sequelize";
 import { UUID } from "crypto";
-
+import bcrypt from 'bcryptjs';
 
 
  interface userattribute {
@@ -82,11 +81,7 @@ class User extends Model <usercreationattribute,userattribute>
                 },
                 password:{
                     type:new DataTypes.TEXT(),
-                    allowNull: false,
-                    set(val: string) {
-                      const hashedPassword = bcrypt.hashSync(val, 10);
-                      this.setDataValue("password", hashedPassword);
-                    }
+                    allowNull: false
                 },
                 postion: {
                     type:DataTypes.UUID,
@@ -109,11 +104,15 @@ class User extends Model <usercreationattribute,userattribute>
                 },
                 jobtitle:{ 
                     type:DataTypes.TEXT,
+                    defaultValue: DataTypes.UUIDV4,
                     allowNull:false
                 },
                 salary:{
                     type:DataTypes.UUID,
-                    allowNull:false
+                    references:{
+                        model:'salary',
+                        key:'id'
+                    }
                 },
                 bankaccount:{
                     type:DataTypes.INTEGER,
@@ -137,6 +136,10 @@ class User extends Model <usercreationattribute,userattribute>
                     tableName: 'user',
                 }
             )
+            User.beforeCreate(async (user) => {
+                const salt = await bcrypt.genSaltSync(10);
+                user.password = await bcrypt.hashSync(user.password, salt);
+            })
         }
     }}
 

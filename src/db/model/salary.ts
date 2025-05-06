@@ -1,10 +1,11 @@
+import { UUID } from 'crypto';
 import { allow, boolean } from 'joi';
 import { Model, DataTypes, Optional,Sequelize} from 'sequelize';
 
  // Assuming you have a config file
 
 interface SalaryAttributes {
-  id: string; // UUID is represented as string in TypeScript
+  id: UUID; // UUID is represented as string in TypeScript
   name:string
   value: number;
   taxDeduction: number;
@@ -20,7 +21,7 @@ interface SalaryCreationAttributes extends Optional<SalaryAttributes, 'id'> {}
 
 class Salary extends Model<SalaryAttributes, SalaryCreationAttributes> 
   implements SalaryAttributes {
-  public id!: string;
+  public id!: UUID;
   public name!: string
   public value!: number;
   public taxDeduction!: number;
@@ -67,7 +68,7 @@ class Salary extends Model<SalaryAttributes, SalaryCreationAttributes>
         {
           sequelize,
           modelName: 'salary',
-          tableName: 'salaries', // Sequelize automatically pluralizes
+          tableName: 'salary', // Sequelize automatically pluralizes
           timestamps: true, // Enable if you want createdAt/updatedAt
           underscored: true // Optional: if you prefer snake_case naming
         }
