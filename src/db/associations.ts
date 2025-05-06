@@ -46,12 +46,12 @@ export const setupAssociations = (sequelize: Sequelize) => {
   
   //position -> user (One-to-Many)
   Position.hasMany(User, {
-    foreignKey:'id',
+    foreignKey:'position',
     as:'position_user'
   })
   //user -> position (Many-to-One)
   User.belongsTo(Position, {
-    foreignKey:'id',
+    foreignKey:'position',
     as:'user_position'
   })
 

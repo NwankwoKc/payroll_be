@@ -10,7 +10,7 @@ interface attendanceattribute {
     leave_id:UUID
 }
 
-interface attendancecreationattribute extends Optional<attendanceattribute,'id'>{}
+export interface attendancecreationattribute extends Optional<attendanceattribute,'id'>{}
 
 class Attendance extends Model<attendancecreationattribute,attendanceattribute>
     implements attendanceattribute {

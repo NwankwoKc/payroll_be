@@ -10,7 +10,7 @@ interface postionattribute {
     createdat:Date,
     updatedat:Date
 }
-interface positioncreationattribute extends Optional<postionattribute,'id'>{}
+export interface positioncreationattribute extends Optional<postionattribute,'id'>{}
 
 class Position extends Model<positioncreationattribute,postionattribute>
 implements postionattribute{

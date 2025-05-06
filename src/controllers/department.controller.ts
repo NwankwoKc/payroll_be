@@ -11,7 +11,7 @@ import  User  from "../db/model/user";
 
 
 
-export class Departments {
+export class department {
   router: Router;
 
   constructor() {
@@ -88,6 +88,9 @@ export class Departments {
           id:req.params.id
         }
       })
+      res.status(200).json({
+        success: true
+      })
   });
   private getspecificdepartmentemployee = asyncWrap(async (req: Request, res: Response) => {
       const employee = await  Department.findByPk(req.params.id,{
@@ -106,5 +109,3 @@ export class Departments {
       
   });
 }
-
-

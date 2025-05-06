@@ -15,7 +15,7 @@ interface leaveattribute {
   updated_at: Date
 }
 
-interface leavecreationattribute extends Optional<leaveattribute,'id'>{}
+export interface leavecreationattribute extends Optional<leaveattribute,'id'>{}
 class Leave extends Model<leavecreationattribute,leaveattribute>
     implements leaveattribute {
         public id!:UUID

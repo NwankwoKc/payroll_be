@@ -10,7 +10,7 @@ interface paymentattribute {
     payment_date:Date
 }
 
-type paymentcreationattribute = Optional<paymentattribute, 'id'>;
+export type paymentcreationattribute = Optional<paymentattribute, 'id'>;
 
 class Payment extends Model<paymentcreationattribute,paymentattribute>
 implements paymentattribute{
