@@ -7,7 +7,7 @@ import { Model, DataTypes, Optional,Sequelize} from 'sequelize';
 interface SalaryAttributes {
   id: UUID; // UUID is represented as string in TypeScript
   name:string
-  value: number;
+  amount: number;
   taxDeduction: number;
   calculation_type:string
   is_taxable:boolean;
@@ -23,7 +23,7 @@ class Salary extends Model<SalaryAttributes, SalaryCreationAttributes>
   implements SalaryAttributes {
   public id!: UUID;
   public name!: string
-  public value!: number;
+  public amount!: number;
   public taxDeduction!: number;
   public calculation_type!: string;
   is_taxable!: boolean;
@@ -44,7 +44,7 @@ class Salary extends Model<SalaryAttributes, SalaryCreationAttributes>
             type:DataTypes.STRING,
             allowNull:false
           },
-          value: {
+          amount: {
             type: DataTypes.INTEGER,
             allowNull: false
           },
@@ -72,9 +72,7 @@ class Salary extends Model<SalaryAttributes, SalaryCreationAttributes>
           timestamps: true, // Enable if you want createdAt/updatedAt
           underscored: true // Optional: if you prefer snake_case naming
         }
-    );
-  }
-
+    )}
 }
 
 

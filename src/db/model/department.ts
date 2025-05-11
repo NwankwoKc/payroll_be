@@ -6,7 +6,7 @@ interface departmentattribute {
     location:string,
     employees:UUID[]
 }
-export interface departmentcreationattribute extends Optional<departmentattribute,'id'>{}
+export interface departmentcreationattribute extends Optional<departmentattribute,'id' | 'employees'>{}
 
 class Department extends Model<departmentcreationattribute,departmentattribute>
 implements departmentattribute{

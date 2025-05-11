@@ -46,7 +46,14 @@ export class attendance {
     if(check){
        throw new HttpException(400,'attendance already exits')
     }
-
+    const date = new Date();
+    const hours = date.getHours();
+    if(hours > 9){
+        attendance.status = "late"
+    }
+    else{
+        attendance.status = "punctual"
+    }
     await Attendance.create(req.body)
 
     res.status(200).json({

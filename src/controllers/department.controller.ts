@@ -22,8 +22,7 @@ export class department {
   initRoutes() {;
     this.router.get("/departments", this.getdepartment);
     this.router.post("/departments", this.createdepartment);
-    this.router.get("/departments/:id", this.getspecificdepartment);
-    this.router.get("/departments/employee/:id", this.getspecificdepartmentemployee);
+    this.router.get("/departments/:id", this.getspecificdepartmentemployee);
     this.router.put("/departments/:id", this.updatedepartment);
     this.router.delete("/departments/:id", this.deletedepartment);
   }
@@ -38,6 +37,7 @@ export class department {
       data: department,
     });
   })
+
   private createdepartment = asyncWrap(async (req: Request, res: Response) => {
     const departmentbody:departmentcreationattribute = req.body;
     const check = await Department.findAll({
@@ -46,7 +46,7 @@ export class department {
         }
     })
 
-    if(check){
+    if(check.length > 0){
        throw new HttpException(400,'department name already exits')
     }
 
@@ -56,6 +56,7 @@ export class department {
       success:true
     })
   });
+
   private getspecificdepartment = asyncWrap(async (req: Request, res: Response) => {
     const department = await Department.findByPk(req.params.id)
     if (!department) {

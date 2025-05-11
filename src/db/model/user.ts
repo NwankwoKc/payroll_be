@@ -1,7 +1,7 @@
 import { Model, Optional, DataTypes, Sequelize } from "sequelize";
 import { UUID } from "crypto";
 import bcrypt from 'bcryptjs';
-
+import { PaystackCreateBulkTransferRecipient } from "../../utils/paystack.utils";
 
  interface userattribute {
     id:UUID,
@@ -9,23 +9,24 @@ import bcrypt from 'bcryptjs';
     lastname:string,
     department:UUID,
     experience:string,
-    postion:UUID,
+    position:UUID,
     email:string,
     password:string,
     hiredate:Date,
     sex:string,
-    phonenumber:number,
+    phonenumber:string,
     jobtitle:string,
-    salary:UUID,
-    bankaccount:number,
+    salary:UUID | null,
+    account_number:number,
+    bank_code:number,
+    type:string,
     bankname:string,
-    role:UUID,
-    payment:Array<UUID>
+    payment:Array<UUID>,
+    recipient:string,
+    profileimage:string
 }
 
-export interface usercreationattribute extends Optional <userattribute,'id'>{
-
-}
+export interface usercreationattribute extends Optional <userattribute,'id' |'payment' | 'profileimage'| 'recipient'| 'salary'>{}
 
 class User extends Model <usercreationattribute,userattribute>
     implements userattribute{
@@ -36,16 +37,19 @@ class User extends Model <usercreationattribute,userattribute>
         public experience!:string
         public email!:string
         public password!:string
-        public postion!:UUID
+        public position!:UUID
         public hiredate!:Date
         public sex!:string
-        public phonenumber!:number
+        public phonenumber!:string
         public jobtitle!:string
-        public salary!:UUID
-        public bankaccount!:number
-        public bankname!:string
-        public role!:UUID
+        public salary!:UUID | null
+        public account_number!:number
+        public bank_code!:number;
+        public type!:string;
+        public bankname!: string;
         public payment!:Array<UUID>
+        public recipient!: string;
+        public profileimage!:string
 
         public static initialize(sequelize:Sequelize){ {
             User.init({
@@ -83,7 +87,7 @@ class User extends Model <usercreationattribute,userattribute>
                     type:new DataTypes.TEXT(),
                     allowNull: false
                 },
-                postion: {
+                position: {
                     type:DataTypes.UUID,
                     allowNull:false,
                     references:{
@@ -114,7 +118,7 @@ class User extends Model <usercreationattribute,userattribute>
                         key:'id'
                     }
                 },
-                bankaccount:{
+                account_number:{
                     type:DataTypes.INTEGER,
                     allowNull:false
                 },
@@ -122,12 +126,22 @@ class User extends Model <usercreationattribute,userattribute>
                     type:DataTypes.TEXT,
                     allowNull:false
                 },
-                role:{
-                    type:DataTypes.ENUM('admin','employee'),
-                    defaultValue: 'employee'
+                type:{
+                    type:DataTypes.TEXT,
+                    defaultValue:'nuban'
+                },
+                bank_code:{
+                    type:DataTypes.INTEGER,
+                    allowNull:false
                 },
                 payment:{
                     type: DataTypes.ARRAY(DataTypes.UUID)
+                },
+                profileimage:{
+                    type: DataTypes.TEXT
+                },
+                recipient:{
+                    type:DataTypes.TEXT
                 }
                 },
                 {

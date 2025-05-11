@@ -34,6 +34,7 @@ export class position {
       data: position,
     });
   })
+  
   private createpositions = asyncWrap(async (req: Request, res: Response) => {
     const position:positioncreationattribute = req.body;
     const check = await Position.findAll({
@@ -42,7 +43,7 @@ export class position {
         }
     })
 
-    if(check){
+    if(check.length > 0){
        throw new HttpException(400,'department name already exits')
     }
 
@@ -52,6 +53,7 @@ export class position {
       success:true
     })
   });
+
   private getspecificpositions = asyncWrap(async (req: Request, res: Response) => {
     const position = await Position.findByPk(req.params.id)
     if (!position) {

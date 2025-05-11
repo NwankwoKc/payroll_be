@@ -23,7 +23,9 @@ setupAssociations(sequelize);
 // Sync database
 (async () => {
   try {
-    await sequelize.sync({ alter: true});
+    await sequelize.sync({
+      force:false
+    });
     console.log('Database synced!');
   } catch (error) {
     console.error('Error syncing database:', error);

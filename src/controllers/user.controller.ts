@@ -9,11 +9,19 @@ import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
 import multer from 'multer';
 import uploadFile from '../middlewares/create.image';
+import { PaystackCreateBulkTransferRecipient } from "../utils/paystack.utils"
+import { string } from 'joi';
+import { getFileUrl } from '../middlewares/create.image';
 
 export class user {
     router: Router;
+  static Data: any;
+  storage:any;  
+  upload:any;
     constructor() {
         this.router = Router();
+        this.storage = multer.memoryStorage();
+        this.upload = multer({ storage: this.storage })
         this.initRoutes();
     }
     initRoutes() {
@@ -22,11 +30,11 @@ export class user {
         this.router.get('/user/:id', this.getUser);
         this.router.put('/user/:id', this.updateUser);
         this.router.delete('/user/:id', this.deleteUser);
-        this.router.post('/user/uploadprofile/:id',this.uploadprofile)
+        this.router.post('/user/uploadprofile/:id',this.upload.single('profileimage'),this.uploadprofile)
     }   
-    private createuser = asyncWrap(async (req:Request,res:Response) => {
 
- 
+    //create user
+    private createuser = asyncWrap(async (req:Request,res:Response) => {
         let userData:usercreationattribute = req.body;
   
         const existingUsers = await User.findAll({
@@ -38,7 +46,7 @@ export class user {
           },
         });
   
-        if (existingUsers.length) {
+        if (existingUsers.length > 0) {
           const exitstingFields: string[] = [];
   
           existingUsers.forEach((user:any) => {
@@ -54,37 +62,29 @@ export class user {
             `User with the provided ${message} already exists`,
           );
         }
-        let createdUser = await User.create({
-          id: uuidv4() as `${string}-${string}-${string}-${string}-${string}`,
-          firstname: userData.firstname,
-          lastname: userData.lastname,
-          email: userData.email,
-          password: userData.password,
-          postion: userData.postion,
-          department: userData.department,
-          experience: "",
-          hiredate: userData.hiredate,
-          sex: "",
-          phonenumber: 0,
-          jobtitle: "",
-          salary: uuidv4() as `${string}-${string}-${string}-${string}-${string}`,
-          bankaccount: 0,
-          bankname: userData.bankname,
-          role: uuidv4() as `${string}-${string}-${string}-${string}-${string}`,
-          payment: []
-        });
-        
+         // Create a recipient on Paystack
+         const reci = new PaystackCreateBulkTransferRecipient();
+         const data:any = await reci.createBulkTransferRecipient({
+             type:userData.type,
+             name:userData.firstname,
+             account_number:userData.account_number.toString(),
+             bank_code:userData.bank_code.toString(),
+             currency:"NGN"
+         })
+         req.body.recipient = data.data.recipient_code;
+        let createdUser = await User.create(req.body);
+      
         res.status(201).json({
           success: true
         });
       },
     );
-
+    //get all users
     getUser = asyncWrap(async (req: Request, res:Response) => {
         const users = await User.findAll();
         // Logic to get user by ID
         res.status(200).json({ 
-            data: 'users',
+            data: users,
             success:true
         });
     });
@@ -125,7 +125,6 @@ export class user {
         });
     })
     uploadprofile = asyncWrap(async (req:Request,res:Response) => {
-      const storage = multer.memoryStorage()
       const userId = req.params.id;
       const user = await User.findByPk(userId);
       if (!user) {
@@ -136,17 +135,28 @@ export class user {
         throw new HttpException(400, "No file uploaded");
       }
       const fileName = `${uuidv4()}-${file.originalname}`;
-      const filePath = req.file?.path; 
       const fileBuffer = file.buffer;
-      if(filePath)
+      const uploadimage = await uploadFile(fileBuffer, fileName)
       // Save the file to the server or cloud storage 
-      await uploadFile(fileBuffer,fileName, filePath);
-      // Update the user's profile picture URL in the database
-      res.status(200).json({
-        message: "Profile picture uploaded successfully",
-        fileName: fileName,
-        filePath: filePath,
-        success:true
-      });
-    })
+      if(uploadimage){
+        const fileUrl = getFileUrl(fileName);
+        if (typeof fileUrl !== 'string') {
+          throw new HttpException(500, "Failed to generate file URL");
+        }
+        user.profileimage = fileUrl;
+        await user.save();
+      }else{
+          res.status(500).json({
+          message: "Failed to upload file",
+          success:false
+        });
+        return;
+      }
+
+    res.status(200).json({
+      message: "Profile picture uploaded successfully",
+      fileName: fileName,
+      success:true
+    });
+  });
 }

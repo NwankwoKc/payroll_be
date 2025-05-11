@@ -1,10 +1,9 @@
+# Dependency directories
 node_modules/
-dist/
 
-
-
+# Environment variables
 .env
-.env.development.local
-.env.test.local
-.env.production.local
 .env.local
+
+# Supabase local emulator
+.supabase/
