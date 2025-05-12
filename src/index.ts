@@ -6,6 +6,7 @@ import pageNotFoundMiddleware from "./middlewares/404.middleware";
 import errorMiddleware from "./middlewares/error.middleware";
 import sequelize from "./db/index";
 import { error } from "console";
+import  cors from 'cors'
 export class App {
   public express: Application;
   private controllers: Controller[];
@@ -25,7 +26,11 @@ export class App {
   private initiatializeMiddlewares() {
     // this.express.use(cors());
     this.express.use(express.json());
-    // this.express.use(cookieParser());
+
+    this.express.use(cors({
+    origin: '*',
+    methods: ['GET','POST','PUT','DELETE']
+    }));
   }
 
   private initializeRoutes() {
