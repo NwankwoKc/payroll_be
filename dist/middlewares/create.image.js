@@ -9,14 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getFileUrl = getFileUrl;
 const supabase_js_1 = require("@supabase/supabase-js");
 // Create Supabase client
 const supabase = (0, supabase_js_1.createClient)(process.env.projecturl, process.env.apikey);
 // Upload file using standard upload
-function uploadFile(file, filename, filePath) {
+function uploadFile(file, filename) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(process.env.projecturl, process.env.apikey);
-        const { data, error } = yield supabase.storage.from('profileimage').upload(filePath, file, {
+        const { data, error } = yield supabase.storage.from('profileimage').upload(filename, file, {
             contentType: "image/jpg",
         });
         if (error) {
@@ -27,5 +28,9 @@ function uploadFile(file, filename, filePath) {
             return true;
         }
     });
+}
+function getFileUrl(filename) {
+    const { data: { publicUrl } } = supabase.storage.from('profileimage').getPublicUrl(filename);
+    return publicUrl;
 }
 exports.default = uploadFile;

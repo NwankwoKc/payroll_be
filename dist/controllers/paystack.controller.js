@@ -27,15 +27,6 @@ class bulkpayment {
                         as: 'user_salary'
                     }]
             });
-            // const usersWithoutRecipients = users.filter((user: any) => !user.recipient);
-            // if (usersWithoutRecipients.length > 0) {
-            //     res.status(400).json({
-            //         status: 'error',
-            //         message: 'Some users are missing recipient codes',
-            //         data: usersWithoutRecipients.map((user: any) => user.id)
-            //     });
-            //     return;
-            // }
             const transferRequest = {
                 currency: "NGN",
                 source: "balance",

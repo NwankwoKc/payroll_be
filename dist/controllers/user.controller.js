@@ -22,6 +22,7 @@ const sequelize_1 = require("sequelize");
 const multer_1 = __importDefault(require("multer"));
 const create_image_1 = __importDefault(require("../middlewares/create.image"));
 const paystack_utils_1 = require("../utils/paystack.utils");
+const create_image_2 = require("../middlewares/create.image");
 class user {
     constructor() {
         //create user
@@ -104,7 +105,6 @@ class user {
             });
         }));
         this.uploadprofile = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
             const userId = req.params.id;
             const user = yield user_1.default.findByPk(userId);
             if (!user) {
@@ -115,11 +115,15 @@ class user {
                 throw new http_exception_1.default(400, "No file uploaded");
             }
             const fileName = `${(0, uuid_1.v4)()}-${file.originalname}`;
-            const filePath = ((_a = req.file) === null || _a === void 0 ? void 0 : _a.path) || "";
             const fileBuffer = file.buffer;
+            const uploadimage = yield (0, create_image_1.default)(fileBuffer, fileName);
             // Save the file to the server or cloud storage 
-            if (yield (0, create_image_1.default)(req.file, fileName, filePath)) {
-                user.profileimage = fileName;
+            if (uploadimage) {
+                const fileUrl = (0, create_image_2.getFileUrl)(fileName);
+                if (typeof fileUrl !== 'string') {
+                    throw new http_exception_1.default(500, "Failed to generate file URL");
+                }
+                user.profileimage = fileUrl;
                 yield user.save();
             }
             else {
@@ -132,7 +136,6 @@ class user {
             res.status(200).json({
                 message: "Profile picture uploaded successfully",
                 fileName: fileName,
-                filePath: filePath,
                 success: true
             });
         }));

@@ -55,7 +55,6 @@ class InitializeBulkTransfer {
                 data
             };
             try {
-                console.log(options);
                 const response = yield axios_1.default.request(options);
                 console.log(response);
                 return response;
