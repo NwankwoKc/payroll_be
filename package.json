@@ -5,8 +5,8 @@
   "main": "server.ts",
   "scripts": {
     "build": "tsc",
-    "vercel-build": "npm run build && cp -r api dist/",
-    "start": "node dist/api/server.js"
+    "vercel-build": "npm run build",
+    "start": "node dist/server.js"
   },
   "author": "kc",
   "license": "ISC",
