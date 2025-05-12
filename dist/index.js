@@ -19,6 +19,7 @@ const express_1 = __importDefault(require("express"));
 const _404_middleware_1 = __importDefault(require("./middlewares/404.middleware"));
 const index_1 = __importDefault(require("./db/index"));
 const console_1 = require("console");
+const cors_1 = __importDefault(require("cors"));
 class App {
     constructor(controllers, port) {
         this.express = (0, express_1.default)();
@@ -32,7 +33,10 @@ class App {
     initiatializeMiddlewares() {
         // this.express.use(cors());
         this.express.use(express_1.default.json());
-        // this.express.use(cookieParser());
+        this.express.use((0, cors_1.default)({
+            origin: '*',
+            methods: ['GET', 'POST', 'PUT', 'DELETE']
+        }));
     }
     initializeRoutes() {
         this.express.get("/", (_req, res) => {
@@ -61,11 +65,6 @@ class App {
             catch (_a) {
                 console.error('unable to connect to database', console_1.error);
             }
-        });
-    }
-    listen() {
-        this.express.listen(this.port, () => {
-            console.log(`app listening on port ${this.port}`);
         });
     }
 }
