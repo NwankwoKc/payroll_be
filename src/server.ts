@@ -11,4 +11,3 @@ import bulkpayment from "./controllers/paystack.controller";
 dotenv.config()
 const app = new App ([new AuthController(),new user(),new department(),new Payslip(),new attendance(),new position(),new salary(),new user(),new bulkpayment()],process.env.port as unknown as number)
 export default app.express;
-app.listen()

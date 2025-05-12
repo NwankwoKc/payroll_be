@@ -57,9 +57,4 @@ export class App {
       console.error('unable to connect to database',error)
     }
   }
-  public listen() {
-    this.express.listen(this.port, () => {
-      console.log(`app listening on port ${this.port}`);
-    });
-  }
 }
