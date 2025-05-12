@@ -9,5 +9,5 @@ import {position} from "./controllers/position.controller";
 import {salary} from "./controllers/salary.controller";
 import bulkpayment from "./controllers/paystack.controller";
 dotenv.config()
-const app = new App ([new AuthController(),new user(),new department(),new Payslip(),new attendance(),new position(),new salary(),new user(),new bulkpayment()],process.env.port as unknown as number)
+const app = new App ([new AuthController(),new user(),new department(),new Payslip(),new attendance(),new position(),new salary(),new user(),new bulkpayment()],process.env.PORT as unknown as number || 3000)
 export default app.express;
