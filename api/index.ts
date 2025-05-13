@@ -62,4 +62,9 @@ export class App {
       console.error('unable to connect to database',error)
     }
   }
+  public listen(){
+    this.express.listen(this.port, () => {
+      console.log(`App is running on port ${this.port}`);
+    });
+  }
 }

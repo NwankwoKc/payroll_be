@@ -7,3 +7,4 @@ node_modules/
 
 # Supabase local emulator
 .supabase/
+.vercel

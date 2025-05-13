@@ -67,5 +67,10 @@ class App {
             }
         });
     }
+    listen() {
+        this.express.listen(this.port, () => {
+            console.log(`App is running on port ${this.port}`);
+        });
+    }
 }
 exports.App = App;
