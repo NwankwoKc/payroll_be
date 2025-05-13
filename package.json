@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "build": "tsc",
-    "vercel-build": "echo building vercel",
+    "vercel-build": "npm run build",
     "start": "node dist/server.js"
   },
   "author": "kc",
