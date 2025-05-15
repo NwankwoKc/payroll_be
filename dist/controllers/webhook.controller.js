@@ -13,7 +13,8 @@ const express_1 = require("express");
 class Webhook {
     constructor() {
         this.webhook = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const event = req.body;
+            const eventData = req.body;
+            console.log(eventData);
             res.sendStatus(200);
         });
         this.router = (0, express_1.Router)();

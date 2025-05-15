@@ -50,28 +50,6 @@ class PaystackCreateBulkTransferRecipient {
     }
 }
 
-class InitializeBulkTransfer {
-    constructor(){}
 
-    async initializebulktransfer(data:transfer) {
-        const options = {
-            url: 'https://api.paystack.co/transfer/bulk',
-            method: 'POST',
-            headers: {
-            Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-            'Content-Type': 'application/json'
-            },
-            data
-        }
-        try{
-            const response = await axios.request(options)
-            console.log(response)
-            return response
-        }catch{
-            console.log(error)            
-            return new HttpException(500,'unable to initialize bulk transfer')
-        }   
-    }
-}
 
-export {PaystackCreateBulkTransferRecipient,InitializeBulkTransfer}
+export {PaystackCreateBulkTransferRecipient}

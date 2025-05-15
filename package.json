@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "vercel-build": "npm run build",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "dev":"nodemon dist/server.js"
   },
   "author": "kc",
   "license": "ISC",

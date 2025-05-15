@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InitializeBulkTransfer = exports.PaystackCreateBulkTransferRecipient = void 0;
+exports.PaystackCreateBulkTransferRecipient = void 0;
 const axios_1 = __importDefault(require("axios"));
 const http_exception_1 = __importDefault(require("./http.exception"));
 class PaystackCreateBulkTransferRecipient {
@@ -41,28 +41,3 @@ class PaystackCreateBulkTransferRecipient {
     }
 }
 exports.PaystackCreateBulkTransferRecipient = PaystackCreateBulkTransferRecipient;
-class InitializeBulkTransfer {
-    constructor() { }
-    initializebulktransfer(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const options = {
-                url: 'https://api.paystack.co/transfer/bulk',
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                data
-            };
-            try {
-                const response = yield axios_1.default.request(options);
-                console.log(response);
-                return response;
-            }
-            catch (_a) {
-                return new http_exception_1.default(500, 'unable to initialize bulk transfer');
-            }
-        });
-    }
-}
-exports.InitializeBulkTransfer = InitializeBulkTransfer;
