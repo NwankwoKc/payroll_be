@@ -13,7 +13,8 @@ public initRoutes (){
 
 
 public webhook = async(req:Request,res:Response)=>{
-    const event = req.body;
-    res.sendStatus(200)
+    const eventData = req.body;
+    console.log(eventData);
+    res.sendStatus(200);
 }
 }

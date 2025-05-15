@@ -1,5 +1,6 @@
 import axios from "axios";
 import HttpException from "./http.exception";
+import { error } from "console";
 
 type recipienttype = { 
     name:string,
@@ -67,6 +68,7 @@ class InitializeBulkTransfer {
             console.log(response)
             return response
         }catch{
+            console.log(error)            
             return new HttpException(500,'unable to initialize bulk transfer')
         }   
     }
