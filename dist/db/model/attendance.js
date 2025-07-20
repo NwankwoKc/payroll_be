@@ -8,12 +8,11 @@ class Attendance extends sequelize_1.Model {
                 type: sequelize_1.DataTypes.UUID,
                 primaryKey: true,
                 allowNull: false,
+                defaultValue: sequelize_1.DataTypes.UUIDV4
             },
             employee_id: {
-                type: sequelize_1.DataTypes.UUID
-            },
-            created_at: {
-                type: sequelize_1.DataTypes.DATE
+                type: sequelize_1.DataTypes.UUID,
+                allowNull: false
             },
             status: {
                 type: sequelize_1.DataTypes.ENUM("late", "punctual")

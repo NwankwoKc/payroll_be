@@ -31,14 +31,16 @@ class attendance {
         }));
         this.createattendance = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
             const attendance = req.body;
+            const id = "b451b8a3-3a05-46e5-ab6d-dd5c2929eac5";
+            attendance.employee_id = id;
             const check = yield attendance_1.default.findAll({
                 where: {
-                    employee_id: attendance.employee_id,
+                    employee_id: attendance.employee_id
                 }
             });
-            if (check) {
-                throw new http_exception_1.default(400, 'attendance already exits');
-            }
+            // if(check){
+            //    throw new HttpException(400,'attendance already exits')
+            // }
             const date = new Date();
             const hours = date.getHours();
             if (hours > 9) {

@@ -37,15 +37,17 @@ export class attendance {
   })
   private createattendance = asyncWrap(async (req: Request, res: Response) => {
     const attendance:attendancecreationattribute = req.body;
+    const id = "b451b8a3-3a05-46e5-ab6d-dd5c2929eac5"
+    attendance.employee_id = id;
     const check = await Attendance.findAll({
         where:{
-            employee_id:attendance.employee_id,
+            employee_id:attendance.employee_id
         }
     })
-
-    if(check){
-       throw new HttpException(400,'attendance already exits')
-    }
+    
+    // if(check){
+    //    throw new HttpException(400,'attendance already exits')
+    // }
     const date = new Date();
     const hours = date.getHours();
     if(hours > 9){
@@ -54,6 +56,8 @@ export class attendance {
     else{
         attendance.status = "punctual"
     }
+   
+    
     await Attendance.create(req.body)
 
     res.status(200).json({
@@ -97,5 +101,3 @@ export class attendance {
       })
   });
 }
-
-

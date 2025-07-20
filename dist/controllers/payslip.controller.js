@@ -31,18 +31,7 @@ class Payslip {
         }));
         this.createpayslip = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
             const payment = req.body;
-            const check = yield payslip_1.default.findAll({
-                where: {
-                    employee_id: payment.employee_id,
-                }
-            });
-            if (check) {
-                throw new http_exception_1.default(400, 'department name already exits');
-            }
-            yield payslip_1.default.create(req.body);
-            res.status(200).json({
-                success: true
-            });
+            const bulkreference = req.params.bulk_reference;
         }));
         this.getspecificpayslip = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
             const check = yield payslip_1.default.findByPk(req.params.id);
@@ -85,7 +74,7 @@ class Payslip {
     initRoutes() {
         ;
         this.router.get("/payments", this.getpayslip);
-        this.router.post("/payments", this.createpayslip);
+        this.router.post("/payments/:bulk_reference", this.createpayslip);
         this.router.get("/payments/:id", this.getspecificpayslip);
         this.router.put("/payments/:id", this.updatepayslip);
         this.router.delete("/payments/:id", this.deletepayslip);

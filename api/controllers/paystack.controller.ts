@@ -8,6 +8,57 @@ import { Router,Request,Response } from 'express';
 import asyncWrap from '../utils/asyncWrapper';
 import axios from 'axios';
 
+
+interface TransferSuccessEvent {
+  data: {
+    amount: number;
+    currency: string; // e.g., "NGN"
+    domain: string;
+    failures: null | any; // Replace `any` with a more specific type if needed
+    id: number;
+    integration: {
+      id: number;
+      is_live: boolean;
+      business_name: string;
+    };
+    reason: string;
+    reference: string;
+    source: string; // e.g., "balance"
+    source_details: null | any;
+    status: "success";
+    titan_code: null | string;
+    transfer_code: string;
+    transferred_at: null | string; // ISO date string
+    recipient: {
+      active: boolean;
+      currency: string;
+      description: string;
+      domain: string;
+      email: null | string;
+      id: number;
+      integration: number;
+      metadata: null | any;
+      name: string;
+      recipient_code: string;
+      type: string; // e.g., "nuban"
+      is_deleted: boolean;
+      details: {
+        account_number: string;
+        account_name: null | string;
+        bank_code: string;
+        bank_name: string;
+      };
+      created_at: string; // ISO date string
+      updated_at: string; // ISO date string
+    };
+    session: {
+      provider: null | string;
+      id: null | string;
+    };
+    created_at: string; // ISO date string
+    updated_at: string; // ISO date string
+  };
+}
 type bulkdatatype = {
     amount:number;
     reference:string;

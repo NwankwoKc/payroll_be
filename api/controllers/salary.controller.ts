@@ -1,10 +1,17 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import asyncWrap from "../utils/asyncWrapper";
 import HttpException from "../utils/http.exception";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { v4 as uuidv4 } from "uuid";
 import  User  from "../db/model/user";
 import { Salary, SalaryAttributes, SalaryCreationAttributes } from "../db/model/salary";
+import Attendance from "../db/model/attendance";
+
+declare module "express-serve-static-core" {
+  interface Request {
+    data?: any;
+  }
+}
 
 export class salary {
   router: Router;
@@ -21,6 +28,7 @@ export class salary {
     this.router.get("/salary/employee/:id", this.getspecificsalaryemployee);
     this.router.put("/salary/:id", this.updatesalary);
     this.router.delete("/salary/:id", this.deletesalary);
+    this.router.get("/salaryamount/:id",this.calculatesalary,this.calculatesalarytwo)
   }
 
   private getsalary = asyncWrap(async (req: Request, res: Response) => {
@@ -120,4 +128,51 @@ export class salary {
       });
       
   });
+
+  //calculating salary based on attendance
+  private calculatesalary = asyncWrap(async (req:Request, res:Response,next)=>{
+    let date = new Date()
+    let id:any = req.params.id
+    const att = await Attendance.findAll({
+      where:{
+        employee_id:id,
+          [Op.and]:[
+            Sequelize.literal(`EXTRACT(YEAR FROM "createdAt") = ${date.getFullYear()}`),
+            Sequelize.literal(`EXTRACT(MONTH FROM "createdAt") = ${date.getMonth() + 1}`),
+          ],
+        }
+    })
+    const count = att.length;
+    req.data = count;
+    next()
+
+  })
+
+  private calculatesalarytwo = asyncWrap(async (req:Request,res:Response)=>{
+    const usersalary = await User.findOne({
+      where:{
+        id:req.params.id
+      },
+      attributes:['salary']
+    })
+    if(!usersalary){return }
+    const usersala = usersalary.salary?.toString()
+    const data = req.data;
+
+    const salary = await Salary.findOne({
+      where:{
+        id:usersala
+      },
+      attributes:['amount'],
+    })
+    if(!salary){return }
+    const sala = salary.amount * data;
+
+    res.status(200).json({
+      success:true,
+      date:{
+        sala
+      }
+    })
+  })
 }

@@ -81,15 +81,5 @@ const setupAssociations = (sequelize) => {
             yield department_1.default.update({ employees: sequelize.fn('array_remove', sequelize.col('employees'), user.id) }, { where: { id: user.department } });
         }
     }));
-    payslip_1.default.afterCreate((payment) => __awaiter(void 0, void 0, void 0, function* () {
-        if (payment.employee_id) {
-            yield user_1.default.update({ payment: sequelize.fn('array_append', sequelize.col('payments'), payment.id) }, { where: { id: payment.employee_id } });
-        }
-    }));
-    payslip_1.default.afterDestroy((payment) => __awaiter(void 0, void 0, void 0, function* () {
-        if (payment.employee_id) {
-            yield user_1.default.update({ payment: sequelize.fn('array_remove', sequelize.col('payments'), payment.id) }, { where: { id: payment.employee_id } });
-        }
-    }));
 };
 exports.setupAssociations = setupAssociations;

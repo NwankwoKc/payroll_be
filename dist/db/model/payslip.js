@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
+;
 class Payment extends sequelize_1.Model {
     static initialize(sequelize) {
         Payment.init({
@@ -10,21 +11,18 @@ class Payment extends sequelize_1.Model {
                 primaryKey: true,
                 allowNull: false,
             },
-            employee_id: {
-                type: sequelize_1.DataTypes.UUID,
+            name: {
+                type: sequelize_1.DataTypes.STRING,
                 references: {
                     model: 'user',
                     key: 'id'
                 }
             },
-            payment_amount: {
-                type: sequelize_1.DataTypes.INTEGER
+            data: {
+                type: sequelize_1.DataTypes.JSON
             },
-            taxdeduction: {
+            recieptnum: {
                 type: sequelize_1.DataTypes.INTEGER
-            },
-            payment_date: {
-                type: sequelize_1.DataTypes.DATE
             }
         }, {
             sequelize,

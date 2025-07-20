@@ -4,45 +4,40 @@ import {DataTypes, Optional, Model, Sequelize} from "sequelize";
 
 interface paymentattribute {
     id:UUID,
-    employee_id:UUID,
-    payment_amount:number,
-    taxdeduction:number,
-    payment_date:Date
+    name:string,
+    recieptnum:number,
+    data:any
 }
 
-export type paymentcreationattribute = Optional<paymentattribute, 'id'>;
+export interface paymentcreationattribute extends Optional<paymentattribute, 'id'>{};
 
-class Payment extends Model<paymentcreationattribute,paymentattribute>
+class Payment extends Model<paymentattribute,paymentcreationattribute>
 implements paymentattribute{
     public id!:UUID
-    public employee_id!:UUID
-    public payment_amount!:number
-    public taxdeduction!:number
-    public payment_date!:Date
+    public name!:string
+    public recieptnum!: number;
+    public data!:any
 
     public static initialize (sequelize:Sequelize){
         Payment.init({
             id: {
                 type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                defaultValue:DataTypes.UUIDV4,
                 primaryKey: true,
                 allowNull: false,
                 },
-            employee_id: {
-                type:DataTypes.UUID,
+            name: {
+                type:DataTypes.STRING,
                 references:{
                     model:'user',
                     key:'id'
                 }
             },
-            payment_amount:{
-                type:DataTypes.INTEGER
+            data:{
+                type:DataTypes.JSON
             },
-            taxdeduction:{
+            recieptnum:{
                 type:DataTypes.INTEGER
-            },
-            payment_date:{
-                type:DataTypes.DATE
             }
         }, {
             sequelize,

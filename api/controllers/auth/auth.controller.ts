@@ -51,9 +51,10 @@ export class AuthController {
     const payload = {
       uid: uid,
     };
+
     res.status(200).json({
       success: true,
-      user
+      payload
     });
   });
 }

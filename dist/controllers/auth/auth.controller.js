@@ -20,7 +20,6 @@ const user_1 = __importDefault(require("../../db/model/user"));
 // import { db } from "../../db/models";
 require("dotenv/config");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const user_controller_1 = require("../user.controller");
 class AuthController {
     constructor() {
         this.login = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -41,7 +40,7 @@ class AuthController {
             };
             res.status(200).json({
                 success: true,
-                user: user_controller_1.user
+                payload
             });
         }));
         this.router = (0, express_1.Router)();

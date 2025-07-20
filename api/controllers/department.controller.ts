@@ -10,7 +10,6 @@ import errorMiddleware from "../middlewares/error.middleware";
 import  User  from "../db/model/user";
 
 
-
 export class department {
   router: Router;
 

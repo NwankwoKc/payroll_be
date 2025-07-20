@@ -1,10 +1,9 @@
 import { UUID } from 'crypto'
 import {Model,Sequelize,DataType,Optional, DataTypes} from 'sequelize'
 
-interface attendanceattribute {
+interface attendanceattribute { 
     id:UUID
     employee_id:UUID,
-    created_at:Date,
     status:string,
     leave_id:UUID
 }
@@ -15,22 +14,19 @@ class Attendance extends Model<attendancecreationattribute,attendanceattribute>
     implements attendanceattribute {
         public id!:UUID;
         public employee_id!:UUID;
-        public created_at!: Date;
         public status!: string;
-        public leave_id!:UUID
+        public leave_id!:UUID;
         public static initialize(sequelize:Sequelize){
             Attendance.init({
                 id:{
                     type:DataTypes.UUID,
                     primaryKey:true,
                     allowNull:false,
-
+                    defaultValue: DataTypes.UUIDV4
                 },
                 employee_id:{
-                    type:DataTypes.UUID
-                },
-                created_at:{
-                    type:DataTypes.DATE
+                    type:DataTypes.UUID,
+                    allowNull:false
                 },
                 status:{
                     type:DataTypes.ENUM("late","punctual")

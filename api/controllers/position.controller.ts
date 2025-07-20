@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from "uuid";
 import Position, { positioncreationattribute } from "../db/model/postion";
 import  User  from "../db/model/user";
 
-
 export class position {
   router: Router;
 
@@ -104,6 +103,5 @@ export class position {
         success: true,
         data: employee,
       });
-      
   });
 }

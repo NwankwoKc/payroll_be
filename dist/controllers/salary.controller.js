@@ -16,8 +16,10 @@ exports.salary = void 0;
 const express_1 = require("express");
 const asyncWrapper_1 = __importDefault(require("../utils/asyncWrapper"));
 const http_exception_1 = __importDefault(require("../utils/http.exception"));
+const sequelize_1 = require("sequelize");
 const user_1 = __importDefault(require("../db/model/user"));
 const salary_1 = require("../db/model/salary");
+const attendance_1 = __importDefault(require("../db/model/attendance"));
 class salary {
     constructor() {
         this.getsalary = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -113,6 +115,53 @@ class salary {
                 data: salary,
             });
         }));
+        //calculating salary based on attendance
+        this.calculatesalary = (0, asyncWrapper_1.default)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            let date = new Date();
+            let id = req.params.id;
+            const att = yield attendance_1.default.findAll({
+                where: {
+                    employee_id: id,
+                    [sequelize_1.Op.and]: [
+                        sequelize_1.Sequelize.literal(`EXTRACT(YEAR FROM "createdAt") = ${date.getFullYear()}`),
+                        sequelize_1.Sequelize.literal(`EXTRACT(MONTH FROM "createdAt") = ${date.getMonth() + 1}`),
+                    ],
+                }
+            });
+            const count = att.length;
+            req.data = count;
+            next();
+        }));
+        this.calculatesalarytwo = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const usersalary = yield user_1.default.findOne({
+                where: {
+                    id: req.params.id
+                },
+                attributes: ['salary']
+            });
+            if (!usersalary) {
+                return;
+            }
+            const usersala = (_a = usersalary.salary) === null || _a === void 0 ? void 0 : _a.toString();
+            const data = req.data;
+            const salary = yield salary_1.Salary.findOne({
+                where: {
+                    id: usersala
+                },
+                attributes: ['amount'],
+            });
+            if (!salary) {
+                return;
+            }
+            const sala = salary.amount * data;
+            res.status(200).json({
+                success: true,
+                date: {
+                    sala
+                }
+            });
+        }));
         this.router = (0, express_1.Router)();
         this.initRoutes();
     }
@@ -124,6 +173,7 @@ class salary {
         this.router.get("/salary/employee/:id", this.getspecificsalaryemployee);
         this.router.put("/salary/:id", this.updatesalary);
         this.router.delete("/salary/:id", this.deletesalary);
+        this.router.get("/salaryamount/:id", this.calculatesalary, this.calculatesalarytwo);
     }
 }
 exports.salary = salary;

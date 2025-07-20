@@ -84,21 +84,4 @@ export const setupAssociations = (sequelize: Sequelize) => {
       );
     }
   });
-
-  Payment.afterCreate(async (payment) => {
-    if (payment.employee_id) {
-      await User.update(
-        { payment: sequelize.fn('array_append', sequelize.col('payments'), payment.id) },
-        { where: { id: payment.employee_id } }
-      );
-    }
-  })
-  Payment.afterDestroy(async (payment) => {
-    if (payment.employee_id) {
-      await User.update(
-        { payment: sequelize.fn('array_remove', sequelize.col('payments'), payment.id) },
-        { where: { id: payment.employee_id } }
-      );
-    }
-  })
 };

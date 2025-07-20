@@ -3,7 +3,6 @@ import { allow, boolean } from 'joi';
 import { Model, DataTypes, Optional,Sequelize} from 'sequelize';
 
  // Assuming you have a config file
-
 interface SalaryAttributes {
   id: UUID; // UUID is represented as string in TypeScript
   name:string
@@ -74,7 +73,5 @@ class Salary extends Model<SalaryAttributes, SalaryCreationAttributes>
         }
     )}
 }
-
-
 
 export { Salary, SalaryAttributes, SalaryCreationAttributes };

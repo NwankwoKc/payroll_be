@@ -1,14 +1,17 @@
 import {Sequelize,DataTypes,Optional,Model} from "sequelize";
 import { UUID } from "crypto";
+
 interface departmentattribute {
     id:UUID,
     name:string,
     location:string,
     employees:UUID[]
 }
+
 export interface departmentcreationattribute extends Optional<departmentattribute,'id' | 'employees'>{}
 
 class Department extends Model<departmentcreationattribute,departmentattribute>
+
 implements departmentattribute{
     public id!:UUID
     public name!:string
