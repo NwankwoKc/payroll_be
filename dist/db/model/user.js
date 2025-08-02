@@ -48,7 +48,7 @@ class User extends sequelize_1.Model {
                     allowNull: false
                 },
                 password: {
-                    type: new sequelize_1.DataTypes.TEXT(),
+                    type: sequelize_1.DataTypes.TEXT,
                     allowNull: false
                 },
                 position: {
@@ -77,13 +77,14 @@ class User extends sequelize_1.Model {
                 },
                 salary: {
                     type: sequelize_1.DataTypes.UUID,
+                    allowNull: true,
                     references: {
                         model: 'salary',
                         key: 'id'
                     }
                 },
                 account_number: {
-                    type: sequelize_1.DataTypes.INTEGER,
+                    type: sequelize_1.DataTypes.TEXT,
                     allowNull: false
                 },
                 bankname: {
@@ -95,14 +96,18 @@ class User extends sequelize_1.Model {
                     defaultValue: 'nuban'
                 },
                 bank_code: {
-                    type: sequelize_1.DataTypes.INTEGER,
+                    type: sequelize_1.DataTypes.TEXT,
                     allowNull: false
                 },
                 payment: {
-                    type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.UUID)
+                    type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.UUID),
+                    allowNull: true,
+                    defaultValue: []
                 },
                 profileimage: {
-                    type: sequelize_1.DataTypes.TEXT
+                    type: sequelize_1.DataTypes.TEXT,
+                    allowNull: true,
+                    defaultValue: null
                 },
                 recipient: {
                     type: sequelize_1.DataTypes.TEXT
@@ -113,8 +118,8 @@ class User extends sequelize_1.Model {
                 tableName: 'user',
             });
             User.beforeCreate((user) => __awaiter(this, void 0, void 0, function* () {
-                const salt = yield bcryptjs_1.default.genSaltSync(10);
-                user.password = yield bcryptjs_1.default.hashSync(user.password, salt);
+                const salt = yield bcryptjs_1.default.genSalt(10);
+                user.password = yield bcryptjs_1.default.hash(user.password, salt);
             }));
         }
     }

@@ -18,22 +18,19 @@ const payslip_1 = __importDefault(require("../db/model/payslip"));
 class Webhook {
     constructor() {
         this.processRecipientResult = (event) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c, _d, _e;
+            var _a;
             const data = event.data;
             const transferCode = data.transfer_code;
-            const eventType = event.event;
+            const eventType = data.status;
             console.log(`Processing ${eventType} for recipient: ${((_a = data.recipient) === null || _a === void 0 ? void 0 : _a.name) || 'Unknown'}`);
             // Determine status from event type
             let status;
             switch (eventType) {
-                case 'transfer.success':
+                case 'SUCCESSFUL':
                     status = 'success';
                     break;
-                case 'transfer.failed':
+                case 'FAILED':
                     status = 'failed';
-                    break;
-                case 'transfer.reversed':
-                    status = 'reversed';
                     break;
                 default:
                     status = 'pending';
@@ -41,44 +38,44 @@ class Webhook {
             const resultData = {
                 event_type: eventType,
                 received_at: new Date(),
-                gateway_response: data.gateway_response || null,
-                failure_reason: data.failures ? data.failures.join(', ') : null,
-                receipt_number: data.receipt_number || null,
-                session_id: ((_b = data.session) === null || _b === void 0 ? void 0 : _b.id) || null,
+                id: data.id,
+                account_number: data.account_number,
+                bank_name: data.bank_name,
+                bank_code: data.bank_code,
+                reference: data.reference,
+                amount: data.amount,
                 fees_charged: data.fees || 0,
                 currency: data.currency || 'NGN',
-                bank_reference: data.titan_code || null,
                 completed_at: data.transferred_at ? new Date(data.transferred_at) : new Date()
             };
             try {
                 const d = yield payslip_1.default.findOne({
                     where: {
-                        name: (_c = data.recipient) === null || _c === void 0 ? void 0 : _c.name
+                        name: data.id
                     }
                 });
                 if (!d) {
                     const l = yield payslip_1.default.create({
-                        name: (_d = data.recipient) === null || _d === void 0 ? void 0 : _d.name,
-                        recieptnum: data.receipt_number,
+                        name: data.id,
                         data: resultData
                     });
                 }
                 else {
                     d.update({
-                        name: (_e = data.recipient) === null || _e === void 0 ? void 0 : _e.name,
-                        recieptnum: data.receipt_number,
+                        name: data.id,
                         data: resultData
                     });
                 }
             }
-            catch (_f) {
+            catch (_b) {
                 console.error('error');
             }
         });
         this.webhook = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const eventData = req.body;
-            const signature = req.headers['x-paystack-signature'];
-            if (!(0, verifyWebhook_1.default)(eventData, signature)) {
+            const signature = req.headers["verif-hash"];
+            const hashver = process.env.flutterwave_skhash;
+            if (!(0, verifyWebhook_1.default)(hashver, signature)) {
                 res.sendStatus(400);
             }
             const event = JSON.parse(eventData.toString());
@@ -92,6 +89,6 @@ class Webhook {
         this.initRoutes();
     }
     initRoutes() {
-        this.router.post('/paystack/webhook', this.webhook);
+        this.router.post('/flw/webhook', this.webhook);
     }
 }

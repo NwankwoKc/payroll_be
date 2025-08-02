@@ -20,6 +20,7 @@ const axios_1 = __importDefault(require("axios"));
 class bulkpayment {
     constructor() {
         this.bulkpayments = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
                 const users = yield user_1.default.findAll({
                     include: [{
@@ -28,24 +29,24 @@ class bulkpayment {
                         }]
                 });
                 const transferRequest = {
-                    currency: "NGN",
-                    source: "balance",
-                    transfers: users.map((user) => ({
+                    title: "staff salary",
+                    bulk_data: users.map((user) => ({
                         amount: user.user_salary.amount,
-                        reference: (0, uuid_1.v4)(),
-                        reason: `Monthly salary for ${user.firstname}`,
-                        recipient: user.recipient
+                        account_number: user.account_number,
+                        narration: `Monthly salary for ${user.firstname}`,
+                        currency: "NGN",
+                        bank_code: user.bank_code,
+                        reference: (0, uuid_1.v4)()
                     }))
                 };
-                console.log(transferRequest);
                 const options = {
-                    url: 'https://api.paystack.co/transfer/bulk',
+                    url: 'https://api.flutterwave.com/v3/bulk-transfers',
                     method: 'POST',
                     headers: {
-                        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+                        Authorization: `Bearer ${process.env.flutterwave_sk}`,
                         'Content-Type': 'application/json'
                     },
-                    data: JSON.stringify(transferRequest)
+                    data: transferRequest
                 };
                 const response = yield axios_1.default.request(options);
                 res.status(200).json({
@@ -56,10 +57,13 @@ class bulkpayment {
                 console.error(error);
                 res.status(500).json({
                     message: 'Unable to process bulk payment',
-                    error: error.message
+                    error: ((_a = error.response) === null || _a === void 0 ? void 0 : _a.data) || error.message
                 });
             }
         });
+        if (!process.env.flutterwave_sk) {
+            throw new Error('Flutterwave secret key not found in environment variables');
+        }
         this.router = (0, express_1.Router)();
         this.initRoutes();
     }

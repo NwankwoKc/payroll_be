@@ -1,7 +1,7 @@
 import { Model, Optional, DataTypes, Sequelize } from "sequelize";
 import { UUID } from "crypto";
 import bcrypt from 'bcryptjs';
-import { PaystackCreateBulkTransferRecipient } from "../../utils/paystack.utils";
+
 
  interface userattribute {
     id:UUID,
@@ -17,8 +17,8 @@ import { PaystackCreateBulkTransferRecipient } from "../../utils/paystack.utils"
     phonenumber:string,
     jobtitle:string,
     salary:UUID | null,
-    account_number:number,
-    bank_code:number,
+    account_number:string,
+    bank_code:string,
     type:string,
     bankname:string,
     payment:Array<UUID>,
@@ -43,8 +43,8 @@ class User extends Model <usercreationattribute,userattribute>
         public phonenumber!:string
         public jobtitle!:string
         public salary!:UUID | null
-        public account_number!:number
-        public bank_code!:number;
+        public account_number!:string
+        public bank_code!:string;
         public type!:string;
         public bankname!: string;
         public payment!:Array<UUID>
@@ -84,7 +84,7 @@ class User extends Model <usercreationattribute,userattribute>
 
                 },
                 password:{
-                    type:new DataTypes.TEXT(),
+                    type: DataTypes.TEXT,
                     allowNull: false
                 },
                 position: {
@@ -113,13 +113,14 @@ class User extends Model <usercreationattribute,userattribute>
                 },
                 salary:{
                     type:DataTypes.UUID,
+                    allowNull:true,
                     references:{
                         model:'salary',
                         key:'id'
                     }
                 },
                 account_number:{
-                    type:DataTypes.INTEGER,
+                    type:DataTypes.TEXT,
                     allowNull:false
                 },
                 bankname:{
@@ -131,14 +132,18 @@ class User extends Model <usercreationattribute,userattribute>
                     defaultValue:'nuban'
                 },
                 bank_code:{
-                    type:DataTypes.INTEGER,
+                    type:DataTypes.TEXT,
                     allowNull:false
                 },
                 payment:{
-                    type: DataTypes.ARRAY(DataTypes.UUID)
+                    type: DataTypes.ARRAY(DataTypes.UUID),
+                    allowNull:true,
+                    defaultValue:[]
                 },
                 profileimage:{
-                    type: DataTypes.TEXT
+                    type: DataTypes.TEXT,
+                    allowNull:true,
+                    defaultValue:null
                 },
                 recipient:{
                     type:DataTypes.TEXT
@@ -151,8 +156,8 @@ class User extends Model <usercreationattribute,userattribute>
                 }
             )
             User.beforeCreate(async (user) => {
-                const salt = await bcrypt.genSaltSync(10);
-                user.password = await bcrypt.hashSync(user.password, salt);
+                const salt = await bcrypt.genSalt(10);
+                user.password = await bcrypt.hash(user.password, salt);
             })
         }
     }}

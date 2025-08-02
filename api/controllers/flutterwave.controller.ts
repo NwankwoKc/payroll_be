@@ -1,6 +1,5 @@
 import User from '../db/model/user'
 import { Salary } from '../db/model/salary'
-import { PaystackCreateBulkTransferRecipient} from '../utils/paystack.utils';
 import {v4 as uuidv4} from 'uuid'
 import { SalaryAttributes } from '../db/model/salary';
 import HttpException from '../utils/http.exception';
@@ -60,16 +59,17 @@ interface TransferSuccessEvent {
   };
 }
 type bulkdatatype = {
+    bank_code:string;
     amount:number;
+    account_number:string;
+    currency:string;
+    narration:string;
     reference:string;
-    reason:string;
-    recipient:string
 }
 
 type transfer = {
-    currency:string;
-    source:string,
-    transfers:bulkdatatype[]
+    title:string;
+    bulk_data:bulkdatatype[]
 }
 
 interface UserWithSalary extends User {
@@ -79,6 +79,9 @@ interface UserWithSalary extends User {
 class bulkpayment{
     router:Router;
     constructor(){
+         if (!process.env.flutterwave_sk) {
+        throw new Error('Flutterwave secret key not found in environment variables');
+    }
         this.router = Router();
         this.initRoutes();
     }
@@ -95,24 +98,26 @@ class bulkpayment{
                     as: 'user_salary'
                 }]
             });
+            
             const transferRequest: transfer = {
-                currency: "NGN",
-                source: "balance",
-                transfers: users.map((user: any) => ({
+                title: "staff salary",
+                bulk_data: users.map((user: any) => ({
                     amount: user.user_salary.amount,
-                    reference: uuidv4(),
-                    reason: `Monthly salary for ${user.firstname}`,
-                    recipient: user.recipienterror
+                    account_number:user.account_number,
+                    narration: `Monthly salary for ${user.firstname}`,
+                    currency:"NGN",
+                    bank_code:user.bank_code,
+                    reference:uuidv4() 
                 }))
             };
             const options = {
-                url: 'https://api.paystack.co/transfer/bulk',
+                url: 'https://api.flutterwave.com/v3/bulk-transfers',
                 method: 'POST',
                 headers: {
-                Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+                Authorization: `Bearer ${process.env.flutterwave_sk}`,
                 'Content-Type': 'application/json'
                 },
-                data:JSON.stringify(transferRequest)
+                data:transferRequest
             }
                 const response = await axios.request(options)
             res.status(200).json({
@@ -123,12 +128,10 @@ class bulkpayment{
             console.error(error);
             res.status(500).json({
                 message: 'Unable to process bulk payment',
-                error: error.message
+                error: error.response?.data || error.message
             });
         }
-       
     }
-    
 }
 
 export default bulkpayment;

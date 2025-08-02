@@ -20,9 +20,6 @@ class Payment extends sequelize_1.Model {
             },
             data: {
                 type: sequelize_1.DataTypes.JSON
-            },
-            recieptnum: {
-                type: sequelize_1.DataTypes.INTEGER
             }
         }, {
             sequelize,

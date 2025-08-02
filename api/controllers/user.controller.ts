@@ -9,9 +9,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
 import multer from 'multer';
 import uploadFile from '../middlewares/create.image';
-import { PaystackCreateBulkTransferRecipient } from "../utils/paystack.utils"
 import { string } from 'joi';
 import { getFileUrl } from '../middlewares/create.image';
+import { error } from 'console';
+
+
 
 export class user {
     router: Router;
@@ -34,7 +36,8 @@ export class user {
     }   
 
     //create user
-    private createuser = asyncWrap(async (req:Request,res:Response) => {
+    private createuser = async (req:Request,res:Response) => {
+      try{
         let userData:usercreationattribute = req.body;
   
         const existingUsers = await User.findAll({
@@ -63,22 +66,30 @@ export class user {
           );
         }
          // Create a recipient on Paystack
-         const reci = new PaystackCreateBulkTransferRecipient();
-         const data:any = await reci.createBulkTransferRecipient({
-             type:userData.type,
-             name:userData.firstname,
-             account_number:userData.account_number.toString(),
-             bank_code:userData.bank_code.toString(),
-             currency:"NGN"
-         })
-         req.body.recipient = data.data.recipient_code;
-        let createdUser = await User.create(req.body);
+        //  const reci = new PaystackCreateBulkTransferRecipient();
+        //  const data:any = await reci.createBulkTransferRecipient({
+        //      type:userData.type,
+        //      name:userData.firstname,
+        //      account_number:userData.account_number,
+        //      bank_code:userData.bank_code.toString(),
+        //      currency:"NGN"
+        //  })
+        //  req.body.recipient = data.data.recipient_code;
+        //  console.log(data.data.recipient_code)
+         console.log(req.body)
+         await User.create(req.body);
       
         res.status(201).json({
           success: true
         });
-      },
-    );
+      }catch(error:any){
+        console.error('User creation error:', error);
+         res.status(400).json({
+            success: false,
+            error: error.message
+        });
+      }
+      }
     //get all users
     getUser = asyncWrap(async (req: Request, res:Response) => {
         const users = await User.findAll();

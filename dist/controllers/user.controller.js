@@ -21,46 +21,56 @@ const uuid_1 = require("uuid");
 const sequelize_1 = require("sequelize");
 const multer_1 = __importDefault(require("multer"));
 const create_image_1 = __importDefault(require("../middlewares/create.image"));
-const paystack_utils_1 = require("../utils/paystack.utils");
 const create_image_2 = require("../middlewares/create.image");
 class user {
     constructor() {
         //create user
-        this.createuser = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
-            let userData = req.body;
-            const existingUsers = yield user_1.default.findAll({
-                where: {
-                    [sequelize_1.Op.or]: {
-                        phonenumber: userData.phonenumber,
-                        email: userData.email,
+        this.createuser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                let userData = req.body;
+                const existingUsers = yield user_1.default.findAll({
+                    where: {
+                        [sequelize_1.Op.or]: {
+                            phonenumber: userData.phonenumber,
+                            email: userData.email,
+                        },
                     },
-                },
-            });
-            if (existingUsers.length > 0) {
-                const exitstingFields = [];
-                existingUsers.forEach((user) => {
-                    if (user.email === userData.email.toLowerCase()) {
-                        exitstingFields.push("email");
-                    }
                 });
-                const message = exitstingFields.join(" and ");
-                throw new http_exception_1.default(409, `User with the provided ${message} already exists`);
+                if (existingUsers.length > 0) {
+                    const exitstingFields = [];
+                    existingUsers.forEach((user) => {
+                        if (user.email === userData.email.toLowerCase()) {
+                            exitstingFields.push("email");
+                        }
+                    });
+                    const message = exitstingFields.join(" and ");
+                    throw new http_exception_1.default(409, `User with the provided ${message} already exists`);
+                }
+                // Create a recipient on Paystack
+                //  const reci = new PaystackCreateBulkTransferRecipient();
+                //  const data:any = await reci.createBulkTransferRecipient({
+                //      type:userData.type,
+                //      name:userData.firstname,
+                //      account_number:userData.account_number,
+                //      bank_code:userData.bank_code.toString(),
+                //      currency:"NGN"
+                //  })
+                //  req.body.recipient = data.data.recipient_code;
+                //  console.log(data.data.recipient_code)
+                console.log(req.body);
+                yield user_1.default.create(req.body);
+                res.status(201).json({
+                    success: true
+                });
             }
-            // Create a recipient on Paystack
-            const reci = new paystack_utils_1.PaystackCreateBulkTransferRecipient();
-            const data = yield reci.createBulkTransferRecipient({
-                type: userData.type,
-                name: userData.firstname,
-                account_number: userData.account_number.toString(),
-                bank_code: userData.bank_code.toString(),
-                currency: "NGN"
-            });
-            req.body.recipient = data.data.recipient_code;
-            let createdUser = yield user_1.default.create(req.body);
-            res.status(201).json({
-                success: true
-            });
-        }));
+            catch (error) {
+                console.error('User creation error:', error);
+                res.status(400).json({
+                    success: false,
+                    error: error.message
+                });
+            }
+        });
         //get all users
         this.getUser = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
             const users = yield user_1.default.findAll();

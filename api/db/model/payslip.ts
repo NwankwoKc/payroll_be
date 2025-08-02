@@ -5,7 +5,6 @@ import {DataTypes, Optional, Model, Sequelize} from "sequelize";
 interface paymentattribute {
     id:UUID,
     name:string,
-    recieptnum:number,
     data:any
 }
 
@@ -15,7 +14,6 @@ class Payment extends Model<paymentattribute,paymentcreationattribute>
 implements paymentattribute{
     public id!:UUID
     public name!:string
-    public recieptnum!: number;
     public data!:any
 
     public static initialize (sequelize:Sequelize){
@@ -35,9 +33,6 @@ implements paymentattribute{
             },
             data:{
                 type:DataTypes.JSON
-            },
-            recieptnum:{
-                type:DataTypes.INTEGER
             }
         }, {
             sequelize,
