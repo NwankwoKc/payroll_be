@@ -7,8 +7,9 @@ import { Payslip } from "./controllers/payslip.controller";
 import { attendance } from "./controllers/attendance.controller";
 import {position} from "./controllers/position.controller";
 import {salary} from "./controllers/salary.controller";
+import { Webhook } from "./controllers/webhook.controller";
 import bulkpayment from "./controllers/flutterwave.controller";
 dotenv.config()
-const app = new App ([new AuthController(),new user(),new department(),new Payslip(),new attendance(),new position(),new salary(),new bulkpayment()],process.env.PORT as unknown as number || 3000)
+const app = new App ([new AuthController(),new user(),new department(),new Payslip(),new attendance(),new position(),new salary(),new bulkpayment(),new Webhook()],process.env.PORT as unknown as number || 3000)
 app.listen()
 export default app;

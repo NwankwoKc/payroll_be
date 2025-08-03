@@ -3,13 +3,12 @@ import verify from "../utils/verifyWebhook";
 import Payment, { paymentcreationattribute } from "../db/model/payslip";
 import { UUID } from "sequelize";
 
-class Webhook {
+export class Webhook {
     router: Router;
-
     constructor() {
     this.router = Router();
     this.initRoutes()
-}
+  }
 
 public initRoutes (){
     this.router.post('/flw/webhook',this.webhook)
