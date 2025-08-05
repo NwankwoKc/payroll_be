@@ -77,13 +77,12 @@ class Webhook {
             const signature = req.headers["verif-hash"];
             const hashver = process.env.flutterwave_skhash;
             if (!(0, verifyWebhook_1.default)(hashver, signature)) {
-                res.sendStatus(400);
-            }
-            const event = JSON.parse(eventData.toString());
-            if (event.event.startsWith('transfer.')) {
-                yield this.processRecipientResult(event);
+                res.status(400).json({
+                    data: "faliled to verify hash"
+                });
             }
             console.log(eventData);
+            console.log(typeof eventData);
             res.sendStatus(200);
         });
         this.router = (0, express_1.Router)();

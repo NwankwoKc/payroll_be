@@ -121,7 +121,7 @@ class bulkpayment{
             }
                 const response = await axios.request(options)
             res.status(200).json({
-                data: response
+                data: response.data
             });
         }
         catch(error:any){
