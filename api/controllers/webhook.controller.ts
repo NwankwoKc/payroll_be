@@ -72,11 +72,11 @@ public webhook = async(req:Request,res:Response)=>{
     const hashver = process.env.flutterwave_skhash as string
 
     if(!verify(hashver,signature)){res.sendStatus(400);}
-
-    const event = JSON.parse(eventData.toString());
-     if (event.event.startsWith('transfer.')) {
-      await this.processRecipientResult(event);
-    }
+    
+    // const event = JSON.parse(eventData.toString());
+    //  if (event.event.startsWith('transfer.')) {
+    //   await this.processRecipientResult(event);
+    // }
     console.log(eventData);
     res.sendStatus(200);
 }
