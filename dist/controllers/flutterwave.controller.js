@@ -28,6 +28,7 @@ class bulkpayment {
                             as: 'user_salary'
                         }]
                 });
+                let ref = (0, uuid_1.v4)();
                 const transferRequest = {
                     title: "staff salary",
                     bulk_data: users.map((user) => ({
@@ -36,7 +37,7 @@ class bulkpayment {
                         narration: `Monthly salary for ${user.firstname}`,
                         currency: "NGN",
                         bank_code: user.bank_code,
-                        reference: (0, uuid_1.v4)()
+                        reference: `${ref}_PMCKDU_1`
                     }))
                 };
                 const options = {

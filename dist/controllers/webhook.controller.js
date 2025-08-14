@@ -77,10 +77,12 @@ class Webhook {
             const signature = req.headers["verif-hash"];
             const hashver = process.env.flutterwave_skhash;
             if (!(0, verifyWebhook_1.default)(hashver, signature)) {
+                console.log("failed to verify hash");
                 res.status(400).json({
                     data: "faliled to verify hash"
                 });
             }
+            console.log("verified hash");
             console.log(eventData);
             console.log(typeof eventData);
             res.sendStatus(200);
