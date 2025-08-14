@@ -71,9 +71,12 @@ public webhook = async(req:Request,res:Response)=>{
     const signature = req.headers["verif-hash"] as string;
     const hashver = process.env.flutterwave_skhash as string
 
-    if(!verify(hashver,signature)){res.status(400).json({
+    if(!verify(hashver,signature)){
+      console.log("failed to verify hash")
+      res.status(400).json({
       data:"faliled to verify hash"
     })}
+    console.log("verified hash")
     console.log(eventData);
     console.log(typeof eventData)
     res.sendStatus(200);

@@ -98,7 +98,7 @@ class bulkpayment{
                     as: 'user_salary'
                 }]
             });
-            
+            let ref = uuidv4()
             const transferRequest: transfer = {
                 title: "staff salary",
                 bulk_data: users.map((user: any) => ({
@@ -107,9 +107,12 @@ class bulkpayment{
                     narration: `Monthly salary for ${user.firstname}`,
                     currency:"NGN",
                     bank_code:user.bank_code,
-                    reference:uuidv4() 
+                    reference:`${ref}_PMCKDU_1`
                 }))
             };
+
+
+
             const options = {
                 url: 'https://api.flutterwave.com/v3/bulk-transfers',
                 method: 'POST',
