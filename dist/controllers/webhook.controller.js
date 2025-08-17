@@ -19,11 +19,8 @@ const payslip_1 = __importDefault(require("../db/model/payslip"));
 class Webhook {
     constructor() {
         this.processRecipientResult = (event) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
             const data = event.data;
-            const transferCode = data.transfer_code;
             const eventType = data.status;
-            console.log(`Processing ${eventType} for recipient: ${((_a = data.recipient) === null || _a === void 0 ? void 0 : _a.name) || 'Unknown'}`);
             // Determine status from event type
             let status;
             switch (eventType) {
@@ -42,13 +39,12 @@ class Webhook {
                 id: data.id,
                 account_number: data.account_number,
                 bank_name: data.bank_name,
-                bank_code: data.bank_code,
                 reference: data.reference,
                 amount: data.amount,
                 meta: data.meta,
                 fees_charged: data.fee || 0,
                 currency: data.currency || 'NGN',
-                completed_at: data.transferred_at ? new Date(data.transferred_at) : new Date()
+                completed_at: new Date()
             };
             try {
                 const d = yield payslip_1.default.findOne({
@@ -69,7 +65,7 @@ class Webhook {
                     });
                 }
             }
-            catch (_b) {
+            catch (_a) {
                 console.error('error');
             }
         });

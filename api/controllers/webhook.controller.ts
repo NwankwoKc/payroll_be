@@ -15,9 +15,7 @@ public initRoutes (){
 }
 public processRecipientResult = async (event:any)=>{
     const data = event.data;
-    const transferCode = data.transfer_code;
     const eventType = data.status;
-    console.log(`Processing ${eventType} for recipient: ${data.recipient?.name || 'Unknown'}`);
 
   // Determine status from event type
   let status;
@@ -37,13 +35,12 @@ public processRecipientResult = async (event:any)=>{
     id:data.id,
     account_number:data.account_number,
     bank_name:data.bank_name,
-    bank_code:data.bank_code,
     reference:data.reference,
     amount:data.amount,
     meta:data.meta,
     fees_charged: data.fee || 0,
     currency: data.currency || 'NGN',
-    completed_at: data.transferred_at ? new Date(data.transferred_at) : new Date()
+    completed_at: new Date()
   };
   try{
     const d = await Payment.findOne({
