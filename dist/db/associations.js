@@ -21,14 +21,19 @@ const postion_1 = __importDefault(require("./model/postion"));
 const salary_1 = require("./model/salary");
 const setupAssociations = (sequelize) => {
     // User -> Payment (One-to-Many)
-    user_1.default.hasMany(payslip_1.default, {
-        foreignKey: 'employee_id',
-        as: 'payments', // Renamed to avoid conflict with User's 'payment' array field
-    });
+    // User.hasMany(Payment, {
+    //   foreignKey: 'employee_id',
+    //   as: 'payments', // Renamed to avoid conflict with User's 'payment' array field
+    // });
     // Payment -> User (Many-to-One)
     payslip_1.default.belongsTo(user_1.default, {
-        foreignKey: 'employee_id',
-        as: 'employee',
+        foreignKey: 'name', // The foreign key in Payment table
+        as: 'employee'
+    });
+    // User has many Payments
+    user_1.default.hasMany(payslip_1.default, {
+        foreignKey: 'name',
+        as: 'payments'
     });
     // Department -> User (One-to-Many)
     department_1.default.hasMany(user_1.default, {

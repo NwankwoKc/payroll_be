@@ -9,16 +9,22 @@ import leave from './model/leave';
 
 export const setupAssociations = (sequelize: Sequelize) => {
   // User -> Payment (One-to-Many)
-  User.hasMany(Payment, {
-    foreignKey: 'employee_id',
-    as: 'payments', // Renamed to avoid conflict with User's 'payment' array field
-  });
+  // User.hasMany(Payment, {
+  //   foreignKey: 'employee_id',
+  //   as: 'payments', // Renamed to avoid conflict with User's 'payment' array field
+  // });
 
   // Payment -> User (Many-to-One)
-  Payment.belongsTo(User, {
-    foreignKey: 'employee_id',
-    as: 'employee',
-  });
+Payment.belongsTo(User, {
+    foreignKey: 'name', // The foreign key in Payment table
+    as: 'employee'
+});
+
+// User has many Payments
+User.hasMany(Payment, {
+    foreignKey: 'name',
+    as: 'payments'
+});
 
   // Department -> User (One-to-Many)
   Department.hasMany(User, {
