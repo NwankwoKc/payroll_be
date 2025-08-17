@@ -2,6 +2,7 @@ import { Router ,Request,Response} from "express";
 import verify from "../utils/verifyWebhook";
 import Payment, { paymentcreationattribute } from "../db/model/payslip";
 import { UUID } from "sequelize";
+import { error } from "console";
 
 export class Webhook {
     router: Router;
@@ -16,6 +17,8 @@ public initRoutes (){
 public processRecipientResult = async (event:any)=>{
     const data = event.transfer;
     const eventType = data.status;
+    console.log(data)
+    console.log(typeof data.meta)
 
   // Determine status from event type
   let status;
@@ -60,7 +63,7 @@ public processRecipientResult = async (event:any)=>{
     })
     }
   }catch{
-    console.error('error')
+    console.error('error',error)
   }
 }
 

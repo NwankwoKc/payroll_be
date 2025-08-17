@@ -6,6 +6,7 @@ import HttpException from '../utils/http.exception';
 import { Router,Request,Response } from 'express';
 import asyncWrap from '../utils/asyncWrapper';
 import axios from 'axios';
+import { UUID } from 'crypto';
 
 
 interface TransferSuccessEvent {
@@ -65,6 +66,7 @@ type bulkdatatype = {
     currency:string;
     narration:string;
     reference:string;
+    meta:UUID
 }
 
 type transfer = {

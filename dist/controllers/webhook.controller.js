@@ -16,11 +16,14 @@ exports.Webhook = void 0;
 const express_1 = require("express");
 const verifyWebhook_1 = __importDefault(require("../utils/verifyWebhook"));
 const payslip_1 = __importDefault(require("../db/model/payslip"));
+const console_1 = require("console");
 class Webhook {
     constructor() {
         this.processRecipientResult = (event) => __awaiter(this, void 0, void 0, function* () {
             const data = event.transfer;
             const eventType = data.status;
+            console.log(data);
+            console.log(typeof data.meta);
             // Determine status from event type
             let status;
             switch (eventType) {
@@ -66,7 +69,7 @@ class Webhook {
                 }
             }
             catch (_a) {
-                console.error('error');
+                console.error('error', console_1.error);
             }
         });
         this.webhook = (req, res) => __awaiter(this, void 0, void 0, function* () {
