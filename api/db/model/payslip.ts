@@ -25,7 +25,7 @@ implements paymentattribute{
                 allowNull: false,
                 },
             name: {
-                type:DataTypes.STRING,
+                type:DataTypes.UUID,
                 references:{
                     model:'user',
                     key:'id'

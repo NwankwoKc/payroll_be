@@ -47,6 +47,9 @@ class Webhook {
                 amount: data.amount,
                 fees_charged: data.fee || 0,
                 currency: data.currency || 'NGN',
+                metadata: {
+                    user_id: data.metadata.user_id
+                },
                 completed_at: data.transferred_at ? new Date(data.transferred_at) : new Date()
             };
             try {
@@ -84,10 +87,10 @@ class Webhook {
             }
             console.log("verified hash");
             console.log(eventData);
-            this.processRecipientResult(eventData);
-            res.status(200).json({
-                data: eventData
-            });
+            // this.processRecipientResult(eventData)
+            // res.status(200).json({
+            //   data:eventData
+            // });
         });
         this.router = (0, express_1.Router)();
         this.initRoutes();

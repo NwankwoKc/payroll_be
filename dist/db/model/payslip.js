@@ -12,7 +12,7 @@ class Payment extends sequelize_1.Model {
                 allowNull: false,
             },
             name: {
-                type: sequelize_1.DataTypes.STRING,
+                type: sequelize_1.DataTypes.UUID,
                 references: {
                     model: 'user',
                     key: 'id'

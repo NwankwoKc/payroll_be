@@ -107,7 +107,10 @@ class bulkpayment{
                     narration: `Monthly salary for ${user.firstname}`,
                     currency:"NGN",
                     bank_code:user.bank_code,
-                    reference:`${ref}_PMCKDU_1`
+                    reference:`${ref}_PMCKDU_1`,
+                    metadata: {
+                        user_id:user.id
+                    }
                 }))
             };
 
