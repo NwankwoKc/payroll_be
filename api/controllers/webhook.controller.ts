@@ -40,29 +40,25 @@ public processRecipientResult = async (event:any)=>{
     bank_code:data.bank_code,
     reference:data.reference,
     amount:data.amount,
+    meta:data.meta,
     fees_charged: data.fee || 0,
     currency: data.currency || 'NGN',
     completed_at: data.transferred_at ? new Date(data.transferred_at) : new Date()
   };
   try{
-    let dt = data.reference
-     // Remove "Monthly salary for " prefix and any names
-    const idPart = dt.split('Monthly salary for ')[1];
-    // Get everything after the first uppercase letter (end of firstname)
-    let result = idPart.match(/[A-Z].*/)?.[0] || '';
     const d = await Payment.findOne({
         where:{
-            name:result
+            name:resultData.meta
         }
     })
     if(!d){
         const l = await Payment.create({
-            name: result,
+            name: resultData.meta,
             data: resultData
         })
     }else{
     d.update({
-        name:result,
+        name:resultData.meta,
         data:resultData
     })
     }
@@ -83,13 +79,6 @@ public webhook = async(req:Request,res:Response)=>{
     })}
     console.log("verified hash")
     console.log(eventData);
-    let dt = eventData.reference
-     // Remove "Monthly salary for " prefix and any names
-    const idPart = dt.split('Monthly salary for ')[1];
-    // Get everything after the first uppercase letter (end of firstname)
-    let result = idPart.match(/[A-Z].*/)?.[0] || '';
-    console.log(result)
-    console.log(typeof result)
     // this.processRecipientResult(eventData)
     // res.status(200).json({
     //   data:eventData

@@ -19,7 +19,7 @@ const payslip_1 = __importDefault(require("../db/model/payslip"));
 class Webhook {
     constructor() {
         this.processRecipientResult = (event) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+            var _a;
             const data = event.data;
             const transferCode = data.transfer_code;
             const eventType = data.status;
@@ -45,40 +45,35 @@ class Webhook {
                 bank_code: data.bank_code,
                 reference: data.reference,
                 amount: data.amount,
+                meta: data.meta,
                 fees_charged: data.fee || 0,
                 currency: data.currency || 'NGN',
                 completed_at: data.transferred_at ? new Date(data.transferred_at) : new Date()
             };
             try {
-                let dt = data.reference;
-                // Remove "Monthly salary for " prefix and any names
-                const idPart = dt.split('Monthly salary for ')[1];
-                // Get everything after the first uppercase letter (end of firstname)
-                let result = ((_b = idPart.match(/[A-Z].*/)) === null || _b === void 0 ? void 0 : _b[0]) || '';
                 const d = yield payslip_1.default.findOne({
                     where: {
-                        name: result
+                        name: resultData.meta
                     }
                 });
                 if (!d) {
                     const l = yield payslip_1.default.create({
-                        name: result,
+                        name: resultData.meta,
                         data: resultData
                     });
                 }
                 else {
                     d.update({
-                        name: result,
+                        name: resultData.meta,
                         data: resultData
                     });
                 }
             }
-            catch (_c) {
+            catch (_b) {
                 console.error('error');
             }
         });
         this.webhook = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
             const eventData = req.body;
             const signature = req.headers["verif-hash"];
             const hashver = process.env.flutterwave_skhash;
@@ -90,13 +85,6 @@ class Webhook {
             }
             console.log("verified hash");
             console.log(eventData);
-            let dt = eventData.reference;
-            // Remove "Monthly salary for " prefix and any names
-            const idPart = dt.split('Monthly salary for ')[1];
-            // Get everything after the first uppercase letter (end of firstname)
-            let result = ((_a = idPart.match(/[A-Z].*/)) === null || _a === void 0 ? void 0 : _a[0]) || '';
-            console.log(result);
-            console.log(typeof result);
             // this.processRecipientResult(eventData)
             // res.status(200).json({
             //   data:eventData
