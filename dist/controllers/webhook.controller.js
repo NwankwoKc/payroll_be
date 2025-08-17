@@ -85,10 +85,10 @@ class Webhook {
             }
             console.log("verified hash");
             console.log(eventData);
-            // this.processRecipientResult(eventData)
-            // res.status(200).json({
-            //   data:eventData
-            // });
+            this.processRecipientResult(eventData);
+            res.status(200).json({
+                data: eventData
+            });
         });
         this.router = (0, express_1.Router)();
         this.initRoutes();

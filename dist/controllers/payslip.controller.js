@@ -17,6 +17,7 @@ const express_1 = require("express");
 const asyncWrapper_1 = __importDefault(require("../utils/asyncWrapper"));
 const http_exception_1 = __importDefault(require("../utils/http.exception"));
 const payslip_1 = __importDefault(require("../db/model/payslip"));
+const user_1 = __importDefault(require("../db/model/user"));
 class Payslip {
     constructor() {
         this.getpayslip = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +35,27 @@ class Payslip {
             const bulkreference = req.params.bulk_reference;
         }));
         this.getspecificpayslip = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
-            const check = yield payslip_1.default.findByPk(req.params.id);
+            const check = yield payslip_1.default.findByPk(req.params.id, {
+                include: [{
+                        model: user_1.default,
+                        as: 'employee'
+                    }]
+            });
+            if (!check) {
+                throw new http_exception_1.default(404, "No departments found");
+            }
+            res.status(200).json({
+                success: true,
+                data: check,
+            });
+        }));
+        this.getspecificpayslips = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const check = yield payslip_1.default.findByPk(req.params.id, {
+                include: [{
+                        model: user_1.default,
+                        as: 'employee'
+                    }]
+            });
             if (!check) {
                 throw new http_exception_1.default(404, "No departments found");
             }
@@ -75,7 +96,8 @@ class Payslip {
         ;
         this.router.get("/payments", this.getpayslip);
         this.router.post("/payments/:bulk_reference", this.createpayslip);
-        this.router.get("/payments/:id", this.getspecificpayslip);
+        this.router.get("/payments/:id", this.getspecificpayslips);
+        this.router.get("/payment/:id", this.getspecificpayslip);
         this.router.put("/payments/:id", this.updatepayslip);
         this.router.delete("/payments/:id", this.deletepayslip);
     }

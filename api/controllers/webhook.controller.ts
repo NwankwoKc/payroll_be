@@ -79,9 +79,9 @@ public webhook = async(req:Request,res:Response)=>{
     })}
     console.log("verified hash")
     console.log(eventData);
-    // this.processRecipientResult(eventData)
-    // res.status(200).json({
-    //   data:eventData
-    // });
+    this.processRecipientResult(eventData)
+    res.status(200).json({
+      data:eventData
+    });
 }
 }

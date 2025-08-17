@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import asyncWrap from "../utils/asyncWrapper";
 import HttpException from "../utils/http.exception";
-import { Op } from "sequelize";
+import { Model, Op } from "sequelize";
 import { departmentcreationattribute } from "../db/model/department";
 import { v4 as uuidv4 } from "uuid";
 import Payment, { paymentcreationattribute } from "../db/model/payslip";
@@ -20,7 +20,8 @@ export class Payslip {
   initRoutes() {;
     this.router.get("/payments", this.getpayslip);
     this.router.post("/payments/:bulk_reference", this.createpayslip);
-    this.router.get("/payments/:id", this.getspecificpayslip);
+    this.router.get("/payments/:id",this.getspecificpayslips)
+    this.router.get("/payment/:id", this.getspecificpayslip);
     this.router.put("/payments/:id", this.updatepayslip);
     this.router.delete("/payments/:id", this.deletepayslip);
   }
@@ -41,7 +42,12 @@ export class Payslip {
     
   });
   private getspecificpayslip = asyncWrap(async (req: Request, res: Response) => {
-    const check = await Payment.findByPk(req.params.id)
+    const check = await Payment.findByPk(req.params.id,{
+      include:[{
+        model:User,
+        as:'employee'
+      }]
+    })
     if (!check) {
       throw new HttpException(404, "No departments found");
     }
@@ -51,6 +57,24 @@ export class Payslip {
     });
     
   });
+ 
+private getspecificpayslips = asyncWrap(async (req: Request, res: Response) => {
+    const check = await Payment.findByPk(req.params.id,{
+      include:[{
+        model:User,
+        as:'employee'
+      }]
+    })
+    if (!check) {
+      throw new HttpException(404, "No departments found");
+    }
+    res.status(200).json({
+      success: true,
+      data: check,
+    });
+    
+  });
+
   private updatepayslip = asyncWrap(async (req: Request, res: Response) => {
       const body:departmentcreationattribute = req.body
       const check = await Payment.update(body,{
