@@ -22,6 +22,8 @@ const sequelize_1 = require("sequelize");
 const multer_1 = __importDefault(require("multer"));
 const create_image_1 = __importDefault(require("../middlewares/create.image"));
 const create_image_2 = require("../middlewares/create.image");
+const department_1 = __importDefault(require("../db/model/department"));
+const postion_1 = __importDefault(require("../db/model/postion"));
 class user {
     constructor() {
         //create user
@@ -58,6 +60,7 @@ class user {
                 //  req.body.recipient = data.data.recipient_code;
                 //  console.log(data.data.recipient_code)
                 console.log(req.body);
+                req.body.type = "nuban";
                 yield user_1.default.create(req.body);
                 res.status(201).json({
                     success: true
@@ -82,7 +85,16 @@ class user {
         }));
         this.getspecificUser = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
             const userId = req.params.id;
-            const user = yield user_1.default.findByPk(userId);
+            const user = yield user_1.default.findByPk(userId, {
+                include: [{
+                        model: department_1.default,
+                        as: "employee_department"
+                    },
+                    {
+                        model: postion_1.default,
+                        as: "user_position"
+                    }]
+            });
             // Logic to get specific user by ID  
             res.status(200).json({
                 data: user,
@@ -157,7 +169,7 @@ class user {
     initRoutes() {
         this.router.get('/user', this.getUser);
         this.router.post('/user', this.createuser);
-        this.router.get('/user/:id', this.getUser);
+        this.router.get('/user/:id', this.getspecificUser);
         this.router.put('/user/:id', this.updateUser);
         this.router.delete('/user/:id', this.deleteUser);
         this.router.post('/user/uploadprofile/:id', this.upload.single('profileimage'), this.uploadprofile);

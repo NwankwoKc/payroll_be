@@ -12,7 +12,9 @@ import uploadFile from '../middlewares/create.image';
 import { string } from 'joi';
 import { getFileUrl } from '../middlewares/create.image';
 import { error } from 'console';
-
+import Department from '../db/model/department';
+import { department } from './department.controller';
+import Position from '../db/model/postion';
 
 
 export class user {
@@ -29,7 +31,7 @@ export class user {
     initRoutes() {
         this.router.get('/user', this.getUser);
         this.router.post('/user', this.createuser);
-        this.router.get('/user/:id', this.getUser);
+        this.router.get('/user/:id', this.getspecificUser);
         this.router.put('/user/:id', this.updateUser);
         this.router.delete('/user/:id', this.deleteUser);
         this.router.post('/user/uploadprofile/:id',this.upload.single('profileimage'),this.uploadprofile)
@@ -77,6 +79,7 @@ export class user {
         //  req.body.recipient = data.data.recipient_code;
         //  console.log(data.data.recipient_code)
          console.log(req.body)
+         req.body.type = "nuban";
          await User.create(req.body);
       
         res.status(201).json({
@@ -101,7 +104,16 @@ export class user {
     });
     getspecificUser = asyncWrap(async (req, res) => {
         const userId = req.params.id;
-        const user = await User.findByPk(userId);
+        const user = await User.findByPk(userId,{
+          include:[{
+            model:Department,
+            as:"employee_department"
+          },
+        {
+          model:Position,
+          as:"user_position"
+        }]
+        });
         // Logic to get specific user by ID  
         res.status(200).json({
              data: user,

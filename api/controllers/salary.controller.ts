@@ -28,7 +28,7 @@ export class salary {
     this.router.get("/salary/employee/:id", this.getspecificsalaryemployee);
     this.router.put("/salary/:id", this.updatesalary);
     this.router.delete("/salary/:id", this.deletesalary);
-    this.router.get("/salaryamount/:id",this.calculatesalary,this.calculatesalarytwo)
+    this.router.post("/salaryamount/:id",this.calculatesalary,this.calculatesalarytwo)
   }
 
   private getsalary = asyncWrap(async (req: Request, res: Response) => {
@@ -167,7 +167,7 @@ export class salary {
     })
     if(!salary){return }
     const sala = salary.amount * data;
-
+    
     res.status(200).json({
       success:true,
       date:{
