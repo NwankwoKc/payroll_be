@@ -50,11 +50,10 @@ class Payslip {
             });
         }));
         this.getspecificpayslips = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
-            const check = yield payslip_1.default.findByPk(req.params.id, {
-                include: [{
-                        model: user_1.default,
-                        as: 'employee'
-                    }]
+            const check = yield payslip_1.default.findAll({
+                where: {
+                    name: req.params.id
+                }
             });
             if (!check) {
                 throw new http_exception_1.default(404, "No departments found");

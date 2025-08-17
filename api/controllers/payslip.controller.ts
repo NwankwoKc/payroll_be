@@ -59,11 +59,10 @@ export class Payslip {
   });
  
 private getspecificpayslips = asyncWrap(async (req: Request, res: Response) => {
-    const check = await Payment.findByPk(req.params.id,{
-      include:[{
-        model:User,
-        as:'employee'
-      }]
+    const check = await Payment.findAll({
+      where:{
+        name:req.params.id
+      }
     })
     if (!check) {
       throw new HttpException(404, "No departments found");
