@@ -14,7 +14,7 @@ public initRoutes (){
     this.router.post('/flw/webhook',this.webhook)
 }
 public processRecipientResult = async (event:any)=>{
-    const data = event.data;
+    const data = event.transfer;
     const eventType = data.status;
 
   // Determine status from event type

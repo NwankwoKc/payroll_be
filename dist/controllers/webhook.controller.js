@@ -19,7 +19,7 @@ const payslip_1 = __importDefault(require("../db/model/payslip"));
 class Webhook {
     constructor() {
         this.processRecipientResult = (event) => __awaiter(this, void 0, void 0, function* () {
-            const data = event.data;
+            const data = event.transfer;
             const eventType = data.status;
             // Determine status from event type
             let status;
