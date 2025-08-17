@@ -104,13 +104,10 @@ class bulkpayment{
                 bulk_data: users.map((user: any) => ({
                     amount: user.user_salary.amount,
                     account_number:user.account_number,
-                    narration: `Monthly salary for ${user.firstname}`,
+                    narration: `Monthly salary for ${user.firstname}${user.id}`,
                     currency:"NGN",
                     bank_code:user.bank_code,
-                    reference:`${ref}_PMCKDU_1`,
-                    metadata: {
-                        user_id:user.id
-                    }
+                    reference:`${ref}_PMCKDU_1`
                 }))
             };
 
