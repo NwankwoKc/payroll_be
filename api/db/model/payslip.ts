@@ -13,7 +13,7 @@ export interface paymentcreationattribute extends Optional<paymentattribute, 'id
 class Payment extends Model<paymentattribute,paymentcreationattribute>
 implements paymentattribute{
     public id!:UUID
-    public name!:string
+    public name!:UUID
     public data!:any
 
     public static initialize (sequelize:Sequelize){
