@@ -17,6 +17,8 @@ const express_1 = require("express");
 const verifyWebhook_1 = __importDefault(require("../utils/verifyWebhook"));
 const payslip_1 = __importDefault(require("../db/model/payslip"));
 const http_exception_1 = __importDefault(require("../utils/http.exception"));
+const ws_1 = __importDefault(require("ws"));
+const index_1 = require("../index"); // Import your App class
 class Webhook {
     constructor() {
         this.processRecipientResult = (event) => __awaiter(this, void 0, void 0, function* () {
@@ -26,7 +28,6 @@ class Webhook {
                     throw new http_exception_1.default(400, 'Invalid transfer data received');
                 }
                 const eventType = data.status;
-                // Determine status from event type
                 let status;
                 switch (eventType) {
                     case 'SUCCESSFUL':
@@ -53,9 +54,7 @@ class Webhook {
                     status
                 };
                 const existingPayment = yield payslip_1.default.findOne({
-                    where: {
-                        name: resultData.meta
-                    }
+                    where: { name: resultData.meta }
                 });
                 if (!existingPayment) {
                     yield payslip_1.default.create({
@@ -83,20 +82,37 @@ class Webhook {
             const eventData = req.body;
             const signature = req.headers["verif-hash"];
             const hashver = process.env.flutterwave_skhash;
+            // Broadcast to WebSocket clients
+            if (this.app.ws) {
+                this.app.ws.clients.forEach((client) => {
+                    if (client.readyState === ws_1.default.OPEN) {
+                        client.send(JSON.stringify({
+                            type: 'webhook_event',
+                            data: eventData,
+                            timestamp: new Date().toISOString()
+                        }));
+                    }
+                });
+            }
             if (!(0, verifyWebhook_1.default)(hashver, signature)) {
                 console.log("failed to verify hash");
                 res.status(400).json({
-                    data: "faliled to verify hash"
+                    data: "failed to verify hash"
                 });
             }
             console.log("verified hash");
             console.log(eventData);
-            this.processRecipientResult(eventData);
+            // Process the webhook asynchronously
+            this.processRecipientResult(eventData).catch(error => {
+                console.error('Error processing webhook:', error);
+            });
             res.status(200).json({
-                data: eventData
+                data: eventData,
+                message: "Webhook processed successfully"
             });
         });
         this.router = (0, express_1.Router)();
+        this.app = index_1.App.getInstance(); // Get the App instance
         this.initRoutes();
     }
     initRoutes() {
