@@ -80,10 +80,11 @@ export class user {
         //  console.log(data.data.recipient_code)
          console.log(req.body)
          req.body.type = "nuban";
-         await User.create(req.body);
+         const data = await User.create(req.body);
       
         res.status(201).json({
-          success: true
+          success: true,
+          data
         });
       }catch(error:any){
         console.error('User creation error:', error);

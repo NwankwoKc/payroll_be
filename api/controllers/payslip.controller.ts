@@ -29,7 +29,7 @@ export class Payslip {
   private getpayslip = asyncWrap(async (req: Request, res: Response) => {
     const check = await Payment.findAll();
     if (!check) {
-      throw new HttpException(404, "No departments found");
+      throw new HttpException(404, "No payslip found");
     }
     res.status(200).json({
       success: true,
@@ -49,7 +49,7 @@ export class Payslip {
       }]
     })
     if (!check) {
-      throw new HttpException(404, "No departments found");
+      throw new HttpException(404, "No payslip found");
     }
     res.status(200).json({
       success: true,
@@ -65,7 +65,7 @@ private getspecificpayslips = asyncWrap(async (req: Request, res: Response) => {
       }
     })
     if (!check) {
-      throw new HttpException(404, "No departments found");
+      throw new HttpException(404, "No payslip found");
     }
     res.status(200).json({
       success: true,
@@ -82,7 +82,7 @@ private getspecificpayslips = asyncWrap(async (req: Request, res: Response) => {
         }
       })
       if (!check) {
-        throw new HttpException(404, "No departments found");
+        throw new HttpException(404, "No payslip found");
       }
       res.status(200).json({
         success: true,

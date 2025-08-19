@@ -4,12 +4,18 @@ import Payment, { paymentcreationattribute } from "../db/model/payslip";
 import { UUID } from "sequelize";
 import { error } from "console";
 import HttpException from '../utils/http.exception';
-
+import WebSocket, { WebSocketServer } from 'ws';
+import { Server } from 'http';
+import { App } from "..";
 export class Webhook {
     router: Router;
-    constructor() {
+    wss:any;
+    private app:App 
+
+    constructor(app:App) {
     this.router = Router();
     this.initRoutes()
+    this.app = app
   }
 
 public initRoutes (){
@@ -90,6 +96,15 @@ public webhook = async(req:Request,res:Response)=>{
     const eventData = req.body;
     const signature = req.headers["verif-hash"] as string;
     const hashver = process.env.flutterwave_skhash as string
+
+
+    if(this.app.ws){
+        this.app.ws?.clients.forEach((client: { readyState: number; send: (arg0: string) => void; }) => {
+        if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(eventData));
+        }
+        });
+    }
 
     if(!verify(hashver,signature)){
       console.log("failed to verify hash")

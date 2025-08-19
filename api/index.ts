@@ -7,10 +7,15 @@ import errorMiddleware from "./middlewares/error.middleware";
 import sequelize from "./db/index";
 import { error } from "console";
 import  cors from 'cors'
+import WebSocket, { WebSocketServer } from 'ws';
+import * as http from 'http'
+
 export class App {
   public express: Application;
   private controllers: Controller[];
   private port: number;
+  public ws:WebSocketServer | undefined;
+  private server:any;
 
   constructor(controllers: Controller[], port: number) {
     this.express = express();
@@ -21,6 +26,8 @@ export class App {
     this.initializeRoutes();
     this.initializeErrorHandling();
     this.connect()
+    this.server = http.createServer(this.express)
+    this.ws = new WebSocketServer({server:this.server})
   }
 
   private initiatializeMiddlewares() {
@@ -63,7 +70,7 @@ export class App {
     }
   }
   public listen(){
-    this.express.listen(this.port, () => {
+    this.server.listen(this.port, () => {
       console.log(`App is running on port ${this.port}`);
     });
   }

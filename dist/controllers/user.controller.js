@@ -61,9 +61,10 @@ class user {
                 //  console.log(data.data.recipient_code)
                 console.log(req.body);
                 req.body.type = "nuban";
-                yield user_1.default.create(req.body);
+                const data = yield user_1.default.create(req.body);
                 res.status(201).json({
-                    success: true
+                    success: true,
+                    data
                 });
             }
             catch (error) {

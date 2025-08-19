@@ -23,7 +23,7 @@ class Payslip {
         this.getpayslip = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
             const check = yield payslip_1.default.findAll();
             if (!check) {
-                throw new http_exception_1.default(404, "No departments found");
+                throw new http_exception_1.default(404, "No payslip found");
             }
             res.status(200).json({
                 success: true,
@@ -42,7 +42,7 @@ class Payslip {
                     }]
             });
             if (!check) {
-                throw new http_exception_1.default(404, "No departments found");
+                throw new http_exception_1.default(404, "No payslip found");
             }
             res.status(200).json({
                 success: true,
@@ -56,7 +56,7 @@ class Payslip {
                 }
             });
             if (!check) {
-                throw new http_exception_1.default(404, "No departments found");
+                throw new http_exception_1.default(404, "No payslip found");
             }
             res.status(200).json({
                 success: true,
@@ -71,7 +71,7 @@ class Payslip {
                 }
             });
             if (!check) {
-                throw new http_exception_1.default(404, "No departments found");
+                throw new http_exception_1.default(404, "No payslip found");
             }
             res.status(200).json({
                 success: true,
