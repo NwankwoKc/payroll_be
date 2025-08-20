@@ -40,9 +40,7 @@ export class App {
   }
   private async initiateWebSocket() {
     try {
-      this.ws = new WebSocketServer({ server: this.server,
-        path:'/ws'
-       });
+      this.ws = new WebSocketServer({server: this.server});
       
       // Listen for WebSocket server ready event
       this.ws.on('listening', () => {
