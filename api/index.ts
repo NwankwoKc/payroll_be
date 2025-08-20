@@ -11,16 +11,16 @@ export class App {
   public express: Application;
   private controllers: Controller[];
   private port: number;
-  public ws: WebSocketServer | undefined;
+  public ws!: WebSocketServer;
   private server: http.Server;
-  private static instance: App; 
+  public static instance: App; 
 
   constructor(controllers: Controller[], port: number) {
     this.express = express();
     this.port = port;
     this.controllers = controllers;
     this.server = http.createServer(this.express);
-
+    App.instance = this;
     this.initiatializeMiddlewares();
     this.initializeRoutes();
     this.initializeErrorHandling();
@@ -40,7 +40,9 @@ export class App {
   }
   private async initiateWebSocket() {
     try {
-      this.ws = new WebSocketServer({ server: this.server });
+      this.ws = new WebSocketServer({ server: this.server,
+        path:'/ws'
+       });
       
       // Listen for WebSocket server ready event
       this.ws.on('listening', () => {

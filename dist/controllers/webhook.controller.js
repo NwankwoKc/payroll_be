@@ -82,8 +82,8 @@ class Webhook {
             const eventData = req.body;
             const signature = req.headers["verif-hash"];
             const hashver = process.env.flutterwave_skhash;
-            // Broadcast to WebSocket clients
-            if (this.app.ws) {
+            // Check if WebSocket server exists and has clients before broadcasting
+            if (this.app && this.app.ws && this.app.ws.clients.size > 0) {
                 this.app.ws.clients.forEach((client) => {
                     if (client.readyState === ws_1.default.OPEN) {
                         client.send(JSON.stringify({
@@ -93,6 +93,9 @@ class Webhook {
                         }));
                     }
                 });
+            }
+            else {
+                console.log('No WebSocket clients connected or WebSocket server not ready');
             }
             if (!(0, verifyWebhook_1.default)(hashver, signature)) {
                 console.log("failed to verify hash");

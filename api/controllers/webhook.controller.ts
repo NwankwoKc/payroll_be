@@ -16,8 +16,9 @@ export class Webhook {
     }
 
     public initRoutes() {
-        this.router.post('/flw/webhook',this.webhook);
+        this.router.post('/flw/webhook', this.webhook);
     }
+
     public processRecipientResult = async (event: any) => {
         try {
             const data = event.transfer;
@@ -26,8 +27,8 @@ export class Webhook {
             }
 
             const eventType = data.status;
-            
             let status;
+
             switch (eventType) {
                 case 'SUCCESSFUL':
                     status = 'success';
@@ -85,8 +86,8 @@ export class Webhook {
         const signature = req.headers["verif-hash"] as string;
         const hashver = process.env.flutterwave_skhash as string;
 
-        // Broadcast to WebSocket clients
-        if (this.app.ws) {
+        // Check if WebSocket server exists and has clients before broadcasting
+        if (this.app && this.app.ws && this.app.ws.clients.size > 0) {
             this.app.ws.clients.forEach((client: WebSocket) => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(JSON.stringify({
@@ -96,18 +97,20 @@ export class Webhook {
                     }));
                 }
             });
+        } else {
+            console.log('No WebSocket clients connected or WebSocket server not ready');
         }
 
         if (!verify(hashver, signature)) {
             console.log("failed to verify hash");
-            res.status(400).json({
+             res.status(400).json({
                 data: "failed to verify hash"
             });
         }
 
         console.log("verified hash");
         console.log(eventData);
-        
+
         // Process the webhook asynchronously
         this.processRecipientResult(eventData).catch(error => {
             console.error('Error processing webhook:', error);

@@ -58,6 +58,7 @@ class App {
         this.port = port;
         this.controllers = controllers;
         this.server = http.createServer(this.express);
+        App.instance = this;
         this.initiatializeMiddlewares();
         this.initializeRoutes();
         this.initializeErrorHandling();
@@ -77,7 +78,9 @@ class App {
     initiateWebSocket() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                this.ws = new ws_1.WebSocketServer({ server: this.server });
+                this.ws = new ws_1.WebSocketServer({ server: this.server,
+                    path: '/ws'
+                });
                 // Listen for WebSocket server ready event
                 this.ws.on('listening', () => {
                     console.log('WebSocket server created and listening');
