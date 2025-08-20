@@ -95,6 +95,7 @@ class Webhook {
                 });
             }
             else {
+                console.log(this.app.ws.clients.size);
                 console.log('No WebSocket clients connected or WebSocket server not ready');
             }
             if (!(0, verifyWebhook_1.default)(hashver, signature)) {

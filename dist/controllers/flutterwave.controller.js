@@ -41,6 +41,7 @@ class bulkpayment {
                         reference: `${ref}_PMCKDU_1`
                     }))
                 };
+                console.log(transferRequest);
                 const options = {
                     url: 'https://api.flutterwave.com/v3/bulk-transfers',
                     method: 'POST',

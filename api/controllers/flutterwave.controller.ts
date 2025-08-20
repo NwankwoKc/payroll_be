@@ -114,7 +114,7 @@ class bulkpayment{
                 }))
             };
 
-
+            console.log(transferRequest)
 
             const options = {
                 url: 'https://api.flutterwave.com/v3/bulk-transfers',
