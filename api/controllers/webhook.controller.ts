@@ -98,6 +98,7 @@ export class Webhook {
                 }
             });
         } else {
+            console.log(this.app.ws.clients.size )
             console.log('No WebSocket clients connected or WebSocket server not ready');
         }
 
