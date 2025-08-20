@@ -52,6 +52,7 @@ const index_1 = __importDefault(require("./db/index"));
 const cors_1 = __importDefault(require("cors"));
 const ws_1 = __importStar(require("ws"));
 const http = __importStar(require("http"));
+const verifyWebhook_1 = __importDefault(require("./utils/verifyWebhook"));
 class App {
     constructor(controllers, port) {
         this.express = (0, express_1.default)();
@@ -63,6 +64,7 @@ class App {
         this.initializeErrorHandling();
         this.connect();
         this.initiateWebSocket(); // Call this after server creation
+        this.initializeWebhookRoutes();
         App.instance = this;
     }
     initiatializeMiddlewares() {
@@ -101,11 +103,7 @@ class App {
         if (this.ws && this.ws.clients.size > 0) {
             this.ws.clients.forEach((client) => {
                 if (client.readyState === ws_1.default.OPEN) {
-                    client.send(JSON.stringify({
-                        type: 'webhook_event',
-                        data: eventData,
-                        timestamp: new Date().toISOString()
-                    }));
+                    client.send(eventData);
                 }
             });
         }
@@ -129,6 +127,23 @@ class App {
     }
     initializeErrorHandling() {
         this.express.use(_404_middleware_1.default);
+    }
+    webhookHandler(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const eventData = req.body;
+            const signature = req.headers["verif-hash"];
+            const hashver = process.env.flutterwave_skhash;
+            if (!(0, verifyWebhook_1.default)(hashver, signature)) {
+                console.log("failed to verify hash");
+                res.status(400).json({
+                    data: "failed to verify hash"
+                });
+            }
+            this.pushtowebsocket(eventData);
+        });
+    }
+    initializeWebhookRoutes() {
+        this.express.post('/api/flw/webhook', this.webhookHandler.bind(this));
     }
     connect() {
         return __awaiter(this, void 0, void 0, function* () {

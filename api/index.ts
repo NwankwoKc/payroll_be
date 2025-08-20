@@ -6,6 +6,7 @@ import sequelize from "./db/index";
 import cors from 'cors'
 import WebSocket, { WebSocketServer } from 'ws';
 import * as http from 'http'
+import verify from "./utils/verifyWebhook";
 
 export class App {
   public express: Application;
@@ -25,6 +26,7 @@ export class App {
     this.initializeErrorHandling();
     this.connect();
     this.initiateWebSocket(); // Call this after server creation
+    this.initializeWebhookRoutes();
     App.instance = this;
   }
 
@@ -61,7 +63,7 @@ export class App {
     }
   }
 
-  public pushtowebsocket(eventData:any){
+  private pushtowebsocket(eventData:any){
      // Check if WebSocket server exists and has clients before broadcasting
     if (this.ws && this.ws.clients.size > 0) {
         this.ws.clients.forEach((client: WebSocket) => {
@@ -95,6 +97,22 @@ export class App {
     this.express.use(pageNotFoundMiddleware);
   }
 
+  private async webhookHandler(req: Request, res: Response) {
+    const eventData = req.body;
+    const signature = req.headers["verif-hash"] as string;
+    const hashver = process.env.flutterwave_skhash as string;
+     if (!verify(hashver, signature)) {
+            console.log("failed to verify hash");
+             res.status(400).json({
+                data: "failed to verify hash"
+            });
+      }
+        this.pushtowebsocket(eventData);
+  }
+ private initializeWebhookRoutes() {
+    this.express.post('/api/flw/webhook', this.webhookHandler.bind(this));
+  }
+  
   private async connect() {
     try {
       await sequelize.authenticate();

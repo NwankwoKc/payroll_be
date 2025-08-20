@@ -1,25 +1,7 @@
-import { Router, Request, Response } from "express";
-import verify from "../utils/verifyWebhook";
-import Payment from "../db/model/payslip";
-import HttpException from '../utils/http.exception';
-import WebSocket from 'ws';
-import {App} from '../index' // Import your App class
+import { Payment } from "../db";
+import HttpException from "../utils/http.exception";
 
-export class Webhook {
-    router: Router;
-    private app: App;
-
-    constructor() {
-        this.router = Router();
-        this.app = App.getInstance(); // Get the App instance
-        this.initRoutes();
-    }
-
-    public initRoutes() {
-        this.router.post('/flw/webhook', this.webhook);
-    }
-
-    public processRecipientResult = async (event: any) => {
+export const processRecipientResult = async (event: any) => {
         try {
             const data = event.transfer;
             if (!data) {
@@ -80,37 +62,3 @@ export class Webhook {
             throw new HttpException(500, `Failed to process payment: ${error.message}`);
         }
     }
-
-    public webhook = async (req: Request, res: Response) => {
-        const eventData = req.body;
-        const signature = req.headers["verif-hash"] as string;
-        const hashver = process.env.flutterwave_skhash as string;
-        
-        
-
-        if (!verify(hashver, signature)) {
-            console.log("failed to verify hash");
-             res.status(400).json({
-                data: "failed to verify hash"
-            });
-        }
-        if(this.app){
-            this.app.pushtowebsocket(eventData)
-        }else{
-            console.log('instance of ')
-        }
-
-        console.log("verified hash");
-        console.log(eventData);
-
-        // Process the webhook asynchronously
-        this.processRecipientResult(eventData).catch(error => {
-            console.error('Error processing webhook:', error);
-        });
-
-        res.status(200).json({
-            data: eventData,
-            message: "Webhook processed successfully"
-        });
-    }
-}
