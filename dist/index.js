@@ -54,18 +54,16 @@ const ws_1 = require("ws");
 const http = __importStar(require("http"));
 class App {
     constructor(controllers, port) {
-        this.errorHandlingInitialized = false;
-        // Set instance FIRST
-        App.instance = this;
         this.express = (0, express_1.default)();
         this.port = port;
         this.controllers = controllers;
         this.server = http.createServer(this.express);
         this.initiatializeMiddlewares();
         this.initializeRoutes();
-        // Don't initialize error handling yet - wait for all controllers
+        this.initializeErrorHandling();
         this.connect();
-        this.initiateWebSocket();
+        this.initiateWebSocket(); // Call this after server creation
+        App.instance = this;
     }
     initiatializeMiddlewares() {
         this.express.use(express_1.default.json());
@@ -81,6 +79,7 @@ class App {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 this.ws = new ws_1.WebSocketServer({ server: this.server });
+                // Listen for WebSocket server ready event
                 this.ws.on('listening', () => {
                     console.log('WebSocket server created and listening');
                 });
@@ -110,18 +109,6 @@ class App {
             this.express.use("/api", controller.router);
         });
     }
-    // Method to add controllers after initialization
-    addController(controller) {
-        this.controllers.push(controller);
-        this.express.use("/api", controller.router);
-    }
-    // Method to finalize initialization (call this after adding all controllers)
-    finalizeInitialization() {
-        if (!this.errorHandlingInitialized) {
-            this.initializeErrorHandling();
-            this.errorHandlingInitialized = true;
-        }
-    }
     initializeErrorHandling() {
         this.express.use(_404_middleware_1.default);
     }
@@ -137,8 +124,6 @@ class App {
         });
     }
     listen() {
-        // Initialize error handling before starting server if not done already
-        this.finalizeInitialization();
         this.server.listen(this.port, () => {
             console.log(`HTTP Server is running on port ${this.port}`);
             console.log(`WebSocket server should be available on the same port`);
