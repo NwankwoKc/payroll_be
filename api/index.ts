@@ -11,7 +11,7 @@ export class App {
   public express: Application;
   private controllers: Controller[];
   private port: number;
-  public ws!: WebSocketServer;
+  ws!: WebSocketServer;
   private server: http.Server;
   public static instance: App; 
 
@@ -58,6 +58,20 @@ export class App {
       
     } catch (error) {
       console.error('Failed to create WebSocket server:', error);
+    }
+  }
+
+  public pushtowebsocket(eventData:any){
+     // Check if WebSocket server exists and has clients before broadcasting
+    if (this.ws && this.ws.clients.size > 0) {
+        this.ws.clients.forEach((client: WebSocket) => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(eventData);
+            }
+        });
+    } else {
+        console.log(this.ws.clients.size )
+        console.log('No WebSocket clients connected or WebSocket server not ready');
     }
   }
 

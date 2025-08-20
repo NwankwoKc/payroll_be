@@ -50,7 +50,7 @@ const express_1 = __importDefault(require("express"));
 const _404_middleware_1 = __importDefault(require("./middlewares/404.middleware"));
 const index_1 = __importDefault(require("./db/index"));
 const cors_1 = __importDefault(require("cors"));
-const ws_1 = require("ws");
+const ws_1 = __importStar(require("ws"));
 const http = __importStar(require("http"));
 class App {
     constructor(controllers, port) {
@@ -95,6 +95,24 @@ class App {
                 console.error('Failed to create WebSocket server:', error);
             }
         });
+    }
+    pushtowebsocket(eventData) {
+        // Check if WebSocket server exists and has clients before broadcasting
+        if (this.ws && this.ws.clients.size > 0) {
+            this.ws.clients.forEach((client) => {
+                if (client.readyState === ws_1.default.OPEN) {
+                    client.send(JSON.stringify({
+                        type: 'webhook_event',
+                        data: eventData,
+                        timestamp: new Date().toISOString()
+                    }));
+                }
+            });
+        }
+        else {
+            console.log(this.ws.clients.size);
+            console.log('No WebSocket clients connected or WebSocket server not ready');
+        }
     }
     initializeRoutes() {
         this.express.get("/", (_req, res) => {
