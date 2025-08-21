@@ -103,7 +103,7 @@ class App {
         if (this.ws && this.ws.clients.size > 0) {
             this.ws.clients.forEach((client) => {
                 if (client.readyState === ws_1.default.OPEN) {
-                    client.send(eventData);
+                    client.send(JSON.stringify(eventData));
                 }
             });
         }

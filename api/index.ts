@@ -68,7 +68,7 @@ export class App {
     if (this.ws && this.ws.clients.size > 0) {
         this.ws.clients.forEach((client: WebSocket) => {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(eventData);
+                client.send(JSON.stringify(eventData));
             }
         });
     } else {
