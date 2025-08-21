@@ -39,7 +39,7 @@ const processRecipientResult = (event) => __awaiter(void 0, void 0, void 0, func
             id: data.id,
             account_number: data.account_number,
             bank_name: data.bank_name,
-            reference: data.reference,
+            reference: data.reference.split('_')[0],
             amount: data.amount,
             meta: data.meta,
             fees_charged: data.fee || 0,
