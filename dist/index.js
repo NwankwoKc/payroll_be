@@ -53,6 +53,7 @@ const cors_1 = __importDefault(require("cors"));
 const ws_1 = __importStar(require("ws"));
 const http = __importStar(require("http"));
 const verifyWebhook_1 = __importDefault(require("./utils/verifyWebhook"));
+const webhook_controller_1 = require("./controllers/webhook.controller");
 class App {
     constructor(controllers, port) {
         this.express = (0, express_1.default)();
@@ -140,6 +141,11 @@ class App {
                 });
             }
             this.pushtowebsocket(eventData);
+            (0, webhook_controller_1.processRecipientResult)(eventData);
+            res.status(200).json({
+                status: "success",
+                message: "Webhook received"
+            });
         });
     }
     initializeWebhookRoutes() {

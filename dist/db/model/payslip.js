@@ -18,6 +18,9 @@ class Payment extends sequelize_1.Model {
                     key: 'id'
                 }
             },
+            reference: {
+                type: sequelize_1.DataTypes.UUID
+            },
             data: {
                 type: sequelize_1.DataTypes.JSON
             }

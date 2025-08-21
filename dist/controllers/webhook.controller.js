@@ -48,17 +48,17 @@ const processRecipientResult = (event) => __awaiter(void 0, void 0, void 0, func
             status
         };
         const existingPayment = yield db_1.Payment.findOne({
-            where: { name: resultData.meta }
+            where: { reference: resultData.reference }
         });
         if (!existingPayment) {
             yield db_1.Payment.create({
                 name: resultData.meta,
+                reference: resultData.reference,
                 data: resultData
             });
         }
         else {
             yield existingPayment.update({
-                name: resultData.meta,
                 data: resultData
             });
         }

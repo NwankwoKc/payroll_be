@@ -38,17 +38,17 @@ export const processRecipientResult = async (event: any) => {
             };
 
             const existingPayment = await Payment.findOne({
-                where: { name: resultData.meta }
+                where: { reference: resultData.reference }
             });
 
             if (!existingPayment) {
                 await Payment.create({
                     name: resultData.meta,
+                    reference:resultData.reference,
                     data: resultData
                 });
             } else {
                 await existingPayment.update({
-                    name: resultData.meta,
                     data: resultData
                 });
             }

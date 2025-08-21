@@ -7,12 +7,13 @@ import cors from 'cors'
 import WebSocket, { WebSocketServer } from 'ws';
 import * as http from 'http'
 import verify from "./utils/verifyWebhook";
+import { processRecipientResult } from "./controllers/webhook.controller";
 
 export class App {
   public express: Application;
   private controllers: Controller[];
   private port: number;
-  ws!: WebSocketServer;
+  ws!: WebSocketServer
   private server: http.Server;
   public static instance: App; 
 
@@ -108,6 +109,13 @@ export class App {
           });
       }
         this.pushtowebsocket(eventData);
+        processRecipientResult(eventData);
+        
+      res.status(200).json({ 
+      status: "success", 
+      message: "Webhook received" 
+    });
+        
   }
   initializeWebhookRoutes() {
     this.express.post('/api/flw/webhook', this.webhookHandler.bind(this));
