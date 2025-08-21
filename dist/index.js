@@ -61,10 +61,10 @@ class App {
         this.server = http.createServer(this.express);
         this.initiatializeMiddlewares();
         this.initializeRoutes();
-        this.initializeErrorHandling();
+        this.initializeWebhookRoutes();
         this.connect();
         this.initiateWebSocket(); // Call this after server creation
-        this.initializeWebhookRoutes();
+        this.initializeErrorHandling();
         App.instance = this;
     }
     initiatializeMiddlewares() {

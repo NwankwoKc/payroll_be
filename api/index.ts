@@ -23,10 +23,10 @@ export class App {
     this.server = http.createServer(this.express);
     this.initiatializeMiddlewares();
     this.initializeRoutes();
-    this.initializeErrorHandling();
+    this.initializeWebhookRoutes();
     this.connect();
     this.initiateWebSocket(); // Call this after server creation
-    this.initializeWebhookRoutes();
+    this.initializeErrorHandling();
     App.instance = this;
   }
 
@@ -105,11 +105,11 @@ export class App {
             console.log("failed to verify hash");
              res.status(400).json({
                 data: "failed to verify hash"
-            });
+          });
       }
         this.pushtowebsocket(eventData);
   }
- private initializeWebhookRoutes() {
+  initializeWebhookRoutes() {
     this.express.post('/api/flw/webhook', this.webhookHandler.bind(this));
   }
   
@@ -123,6 +123,7 @@ export class App {
   }
 
   public listen() {
+
     this.server.listen(this.port, () => {
       console.log(`HTTP Server is running on port ${this.port}`);
       console.log(`WebSocket server should be available on the same port`);
