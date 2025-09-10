@@ -28,7 +28,6 @@ export class salary {
     this.router.get("/salary/employee/:id", this.getspecificsalaryemployee);
     this.router.put("/salary/:id", this.updatesalary);
     this.router.delete("/salary/:id", this.deletesalary);
-    this.router.post("/salaryamount/:id",this.calculatesalary,this.calculatesalarytwo)
   }
 
   private getsalary = asyncWrap(async (req: Request, res: Response) => {
@@ -129,50 +128,29 @@ export class salary {
       
   });
 
-  //calculating salary based on attendance
-  private calculatesalary = asyncWrap(async (req:Request, res:Response,next)=>{
-    let date = new Date()
-    let id:any = req.params.id
-    const att = await Attendance.findAll({
-      where:{
-        employee_id:id,
-          [Op.and]:[
-            Sequelize.literal(`EXTRACT(YEAR FROM "createdAt") = ${date.getFullYear()}`),
-            Sequelize.literal(`EXTRACT(MONTH FROM "createdAt") = ${date.getMonth() + 1}`),
-          ],
-        }
-    })
-    const count = att.length;
-    req.data = count;
-    next()
+  
 
-  })
+  // private calculatesalarytwo = asyncWrap(async (req:Request,res:Response,next)=>{
+  //   const usersalary = await User.findOne({
+  //     where:{
+  //       id:req.params.id
+  //     },
+  //     attributes:['salary']
+  //   })
+  //   if(!usersalary){return }
+  //   const usersala = usersalary.salary?.toString()
+  //   const data = req.data;
 
-  private calculatesalarytwo = asyncWrap(async (req:Request,res:Response)=>{
-    const usersalary = await User.findOne({
-      where:{
-        id:req.params.id
-      },
-      attributes:['salary']
-    })
-    if(!usersalary){return }
-    const usersala = usersalary.salary?.toString()
-    const data = req.data;
-
-    const salary = await Salary.findOne({
-      where:{
-        id:usersala
-      },
-      attributes:['amount'],
-    })
-    if(!salary){return }
-    const sala = salary.amount * data;
+  //   const salary = await Salary.findOne({
+  //     where:{
+  //       id:usersala
+  //     },
+  //     attributes:['amount'],
+  //   })
+  //   if(!salary){return }
+  //   const sala = salary.amount * data;
     
-    res.status(200).json({
-      success:true,
-      date:{
-        sala
-      }
-    })
-  })
+  //  req.data = sala;
+  //  next()
+  // })
 }

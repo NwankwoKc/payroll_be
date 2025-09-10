@@ -31,8 +31,8 @@ class bulkpayment {
                 let ref = (0, uuid_1.v4)();
                 const transferRequest = {
                     title: "staff salary",
-                    bulk_data: users.map((user) => ({
-                        amount: user.user_salary.amount,
+                    bulk_data: yield users.map((user) => ({
+                        amount: user.amount,
                         account_number: user.account_number,
                         narration: `Monthly salary for ${user.firstname}`,
                         currency: "NGN",

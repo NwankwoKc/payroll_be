@@ -67,19 +67,12 @@ export class user {
             `User with the provided ${message} already exists`,
           );
         }
-         // Create a recipient on Paystack
-        //  const reci = new PaystackCreateBulkTransferRecipient();
-        //  const data:any = await reci.createBulkTransferRecipient({
-        //      type:userData.type,
-        //      name:userData.firstname,
-        //      account_number:userData.account_number,
-        //      bank_code:userData.bank_code.toString(),
-        //      currency:"NGN"
-        //  })
-        //  req.body.recipient = data.data.recipient_code;
-        //  console.log(data.data.recipient_code)
+        
+    
          console.log(req.body)
          req.body.type = "nuban";
+         
+        // req.body.profileimage = fileUrl;
          const data = await User.create(req.body);
       
         res.status(201).json({

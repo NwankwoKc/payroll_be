@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import Attendance, { attendancecreationattribute } from "../db/model/attendance";
 import errorMiddleware from "../middlewares/error.middleware";
 import  User  from "../db/model/user";
+import { calculatesalary } from "../utils/calculate.salary";
 
 
 export class attendance {
@@ -26,10 +27,11 @@ export class attendance {
   }
 
   private getattendance = asyncWrap(async (req: Request, res: Response) => {
-    const attendance = await Attendance.findAll();
+    const attendance:any = await Attendance.findAll();
     if (!attendance) {
       throw new HttpException(404, "No attendance found");
     }
+    console.log(attendance.createdAt)
     res.status(200).json({
       success: true,
       data: attendance,
@@ -37,38 +39,52 @@ export class attendance {
   })
   private createattendance = asyncWrap(async (req: Request, res: Response) => {
     const attendance:attendancecreationattribute = req.body;
-    const id = "b451b8a3-3a05-46e5-ab6d-dd5c2929eac5"
+    const id = req.body.id
     attendance.employee_id = id;
+    const date = new Date();
+    const dateWithoutTime = date.toDateString();
     const check = await Attendance.findAll({
         where:{
-            employee_id:attendance.employee_id
+            employee_id:attendance.employee_id,
+            created_at:dateWithoutTime
         }
     })
     
-    // if(check){
-    //    throw new HttpException(400,'attendance already exits')
-    // }
-    const date = new Date();
+    if(check.length > 0){
+       throw new HttpException(400,'attendance already exits')
+    }
+ 
     const hours = date.getHours();
     if(hours > 9){
         attendance.status = "late"
     }
     else{
         attendance.status = "punctual"
-    }
-   
-    
+    }    
+  
+    attendance.created_at = dateWithoutTime;
     await Attendance.create(req.body)
-
+    calculatesalary(id);
     res.status(200).json({
       success:true
     })
   });
+
   private getspecificattendance = asyncWrap(async (req: Request, res: Response) => {
-    const attendance = await Attendance.findByPk(req.params.id)
-    if (!attendance) {
+    const attendance:any = await Attendance.findAll({
+      where: {
+        employee_id:req.params.id
+      }
+    })
+    if(!attendance) {
       throw new HttpException(404, "No attendance found");
     }
+    // const dateString = attendance.created_at
+    // const parts = dateString.split(' ');
+    // const monthAbbreviation = parts[1]; // "Sep"
+    // console.log(monthAbbreviation); // Output: Sep
+  
+      
     res.status(200).json({
       success: true,
       data: attendance

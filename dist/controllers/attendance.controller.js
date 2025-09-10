@@ -17,6 +17,7 @@ const express_1 = require("express");
 const asyncWrapper_1 = __importDefault(require("../utils/asyncWrapper"));
 const http_exception_1 = __importDefault(require("../utils/http.exception"));
 const attendance_1 = __importDefault(require("../db/model/attendance"));
+const calculate_salary_1 = require("../utils/calculate.salary");
 class attendance {
     constructor() {
         this.getattendance = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -24,6 +25,7 @@ class attendance {
             if (!attendance) {
                 throw new http_exception_1.default(404, "No attendance found");
             }
+            console.log(attendance.createdAt);
             res.status(200).json({
                 success: true,
                 data: attendance,
@@ -31,17 +33,19 @@ class attendance {
         }));
         this.createattendance = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
             const attendance = req.body;
-            const id = "b451b8a3-3a05-46e5-ab6d-dd5c2929eac5";
+            const id = "f1c8bded-9423-4545-aafe-a0baaaffa0b4";
             attendance.employee_id = id;
+            const date = new Date();
+            const dateWithoutTime = date.toDateString();
             const check = yield attendance_1.default.findAll({
                 where: {
-                    employee_id: attendance.employee_id
+                    employee_id: attendance.employee_id,
+                    created_at: dateWithoutTime
                 }
             });
-            // if(check){
-            //    throw new HttpException(400,'attendance already exits')
-            // }
-            const date = new Date();
+            if (check.length > 0) {
+                throw new http_exception_1.default(400, 'attendance already exits');
+            }
             const hours = date.getHours();
             if (hours > 9) {
                 attendance.status = "late";
@@ -49,16 +53,26 @@ class attendance {
             else {
                 attendance.status = "punctual";
             }
+            attendance.created_at = dateWithoutTime;
             yield attendance_1.default.create(req.body);
+            (0, calculate_salary_1.calculatesalary)(id);
             res.status(200).json({
                 success: true
             });
         }));
         this.getspecificattendance = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
-            const attendance = yield attendance_1.default.findByPk(req.params.id);
+            const attendance = yield attendance_1.default.findAll({
+                where: {
+                    employee_id: req.params.id
+                }
+            });
             if (!attendance) {
                 throw new http_exception_1.default(404, "No attendance found");
             }
+            // const dateString = attendance.created_at
+            // const parts = dateString.split(' ');
+            // const monthAbbreviation = parts[1]; // "Sep"
+            // console.log(monthAbbreviation); // Output: Sep
             res.status(200).json({
                 success: true,
                 data: attendance

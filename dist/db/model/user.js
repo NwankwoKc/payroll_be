@@ -109,6 +109,9 @@ class User extends sequelize_1.Model {
                     allowNull: true,
                     defaultValue: null
                 },
+                amount: {
+                    type: sequelize_1.DataTypes.NUMBER
+                },
                 recipient: {
                     type: sequelize_1.DataTypes.TEXT
                 }

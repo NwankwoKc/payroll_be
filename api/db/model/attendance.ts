@@ -4,6 +4,7 @@ import {Model,Sequelize,DataType,Optional, DataTypes} from 'sequelize'
 interface attendanceattribute { 
     id:UUID
     employee_id:UUID,
+    created_at:string,
     status:string,
     leave_id:UUID
 }
@@ -15,6 +16,7 @@ class Attendance extends Model<attendancecreationattribute,attendanceattribute>
         public id!:UUID;
         public employee_id!:UUID;
         public status!: string;
+        public created_at!: string;
         public leave_id!:UUID;
         public static initialize(sequelize:Sequelize){
             Attendance.init({
@@ -30,6 +32,9 @@ class Attendance extends Model<attendancecreationattribute,attendanceattribute>
                 },
                 status:{
                     type:DataTypes.ENUM("late","punctual")
+                },
+                created_at:{
+                    type:DataTypes.STRING
                 },
                 leave_id:{
                     type:DataTypes.UUID

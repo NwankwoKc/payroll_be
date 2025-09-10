@@ -7,6 +7,7 @@ import { Router,Request,Response } from 'express';
 import asyncWrap from '../utils/asyncWrapper';
 import axios from 'axios';
 import { UUID } from 'crypto';
+import { calculatesalary } from '../utils/calculate.salary';
 
 
 interface TransferSuccessEvent {
@@ -61,7 +62,7 @@ interface TransferSuccessEvent {
 }
 type bulkdatatype = {
     bank_code:string;
-    amount:number;
+    amount:any;
     account_number:string;
     currency:string;
     narration:string;
@@ -81,6 +82,7 @@ interface UserWithSalary extends User {
 class bulkpayment{
     router:Router;
     constructor(){
+        
          if (!process.env.flutterwave_sk) {
         throw new Error('Flutterwave secret key not found in environment variables');
     }
@@ -100,11 +102,12 @@ class bulkpayment{
                     as: 'user_salary'
                 }]
             });
+            
             let ref = uuidv4()
             const transferRequest: transfer = {
                 title: "staff salary",
-                bulk_data: users.map((user: any) => ({
-                    amount: user.user_salary.amount,
+                bulk_data: await users.map((user: any) => ({
+                    amount: user.amount,
                     account_number:user.account_number,
                     narration: `Monthly salary for ${user.firstname}`,
                     currency:"NGN",

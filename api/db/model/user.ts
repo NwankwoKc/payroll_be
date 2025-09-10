@@ -23,7 +23,8 @@ import bcrypt from 'bcryptjs';
     bankname:string,
     payment:Array<UUID>,
     recipient:string,
-    profileimage:string
+    profileimage:string,
+    amount:number
 }
 
 export interface usercreationattribute extends Optional <userattribute,'id' |'payment' | 'profileimage'| 'recipient'| 'salary'>{}
@@ -49,7 +50,8 @@ class User extends Model <usercreationattribute,userattribute>
         public bankname!: string;
         public payment!:Array<UUID>
         public recipient!: string;
-        public profileimage!:string
+        public profileimage!:string;
+        public amount!: number;
 
         public static initialize(sequelize:Sequelize){ {
             User.init({
@@ -144,6 +146,9 @@ class User extends Model <usercreationattribute,userattribute>
                     type: DataTypes.TEXT,
                     allowNull:true,
                     defaultValue:null
+                },
+                amount:{
+                    type:DataTypes.NUMBER
                 },
                 recipient:{
                     type:DataTypes.TEXT

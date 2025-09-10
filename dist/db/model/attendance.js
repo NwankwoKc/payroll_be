@@ -17,6 +17,9 @@ class Attendance extends sequelize_1.Model {
             status: {
                 type: sequelize_1.DataTypes.ENUM("late", "punctual")
             },
+            created_at: {
+                type: sequelize_1.DataTypes.STRING
+            },
             leave_id: {
                 type: sequelize_1.DataTypes.UUID
             }
