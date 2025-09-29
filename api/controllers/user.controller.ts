@@ -16,7 +16,6 @@ import Department from '../db/model/department';
 import { department } from './department.controller';
 import Position from '../db/model/postion';
 
-
 export class user {
     router: Router;
   static Data: any;
@@ -155,8 +154,9 @@ export class user {
       const fileBuffer = file.buffer;
       const uploadimage = await uploadFile(fileBuffer, fileName)
       // Save the file to the server or cloud storage 
+      let fileUrl;
       if(uploadimage){
-        const fileUrl = getFileUrl(fileName);
+        fileUrl = getFileUrl(fileName);
         if (typeof fileUrl !== 'string') {
           throw new HttpException(500, "Failed to generate file URL");
         }
@@ -173,6 +173,7 @@ export class user {
     res.status(200).json({
       message: "Profile picture uploaded successfully",
       fileName: fileName,
+      fileurl:fileUrl,
       success:true
     });
   });

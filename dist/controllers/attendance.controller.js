@@ -33,7 +33,7 @@ class attendance {
         }));
         this.createattendance = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
             const attendance = req.body;
-            const id = "f1c8bded-9423-4545-aafe-a0baaaffa0b4";
+            const id = req.body.id;
             attendance.employee_id = id;
             const date = new Date();
             const dateWithoutTime = date.toDateString();

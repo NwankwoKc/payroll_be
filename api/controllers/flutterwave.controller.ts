@@ -83,7 +83,7 @@ class bulkpayment{
     router:Router;
     constructor(){
         
-         if (!process.env.flutterwave_sk) {
+        if (!process.env.flutterwave_sk) {
         throw new Error('Flutterwave secret key not found in environment variables');
     }
         this.router = Router();
